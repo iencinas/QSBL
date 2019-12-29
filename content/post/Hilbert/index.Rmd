@@ -1,0 +1,196 @@
+---
+title: "Hilbert Curves"
+authors: 
+- admin
+date: "2019-12-28"
+output: html_document
+summary: Create 2D and 3D Hilbert Curves.
+categories: ["R"]
+tags: ["R", "plot", "Hilbert"]
+featured: false
+image:
+  caption: ""
+  focal_point: ""
+  preview_only: true
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## 2D Hilbert Curves
+
+Start by "borrow" some code to create 2D Hilbert Curves:
+
+From [here](https://aschinchon.wordpress.com/2016/02/01/going-bananas-with-hilbert/).
+
+```{r}
+hilbert.2d.1 = function(n=3) {
+  m=matrix(1);
+  r=2
+  for (i in 1:n)
+  {
+    tmp=cbind(t(m), m+nrow(m)^2)
+    m=rbind(tmp, (2*nrow(m))^r-tmp[nrow(m):1,]+1)
+  }
+  return(melt(m) %>% plyr::rename(c("Var1" = "x", "Var2" = "y", "value"="order")) %>% arrange(order))
+}
+
+```
+
+From [here](http://www.fundza.com/algorithmic/space_filling/hilbert/basics/index.html).
+
+```{r}
+hilbert.2d.2 <- function(n=3){
+  H.aux <-   function(x=0, y=0, xi=1, xj=0, yi=0, yj=1, n=n) {
+    
+    if (n <= 0) {
+      return(c(x + (xi + yi)/2, y + (xj + yj)/2))
+    } else {
+      return(rbind(
+        H.aux(x,           y,           yi/2, yj/2,  xi/2,  xj/2, n-1),
+        H.aux(x+xi/2,      y+xj/2 ,     xi/2, xj/2,  yi/2,  yj/2, n-1),
+        H.aux(x+xi/2+yi/2, y+xj/2+yj/2, xi/2, xj/2,  yi/2,  yj/2, n-1),
+        H.aux(x+xi/2+yi,   y+xj/2+yj,  -yi/2,-yj/2, -xi/2, -xj/2, n-1)
+      ))
+    }    
+  }
+  return(setNames(as.data.frame(H.aux(n=n)),  c('x','y')) )
+}
+
+```
+And... from [here]( http://www.mathworks.com/matlabcentral/fileexchange/27577-fractal-curves/content/hilbert.m).
+
+
+```{r}
+hilbert.2d.3 <- function(n=3){
+  
+  a =complex(real=1, imaginary =  1);
+  b =complex(real=1, imaginary = - 1);
+  
+  z=0
+  aux=complex(real=0,imaginary=1)
+  for(k in 1:n){
+    w=aux*Conj(z);
+    z = rbind((w-a)/2,(z-b)/2,(z+a)/2,(b-w)/2)  
+  }
+  return(data.frame(x=Re(z),y=Im(z)))
+}
+```
+
+Try to plot nicely:
+
+```{r warning=F,message=F,fig.width=9, fig.height=3,fig.align='center'}
+library(reshape2)
+library(gridExtra)
+iter=3 #Number of iterations
+df.1=hilbert.2d.1(n=iter)
+df.2=hilbert.2d.2(n=iter)
+df.3=hilbert.2d.3(n=iter)
+customtheme <- theme_void()+theme(panel.border = element_rect(fill=NA))
+p1 <- ggplot(df.1, aes(x, y)) +  geom_path(color="gray75", size=1) + customtheme #+ coord_fixed(ratio=1)
+p2 <- ggplot(df.2, aes(x, y)) +  geom_path(color="gray75", size=1) + customtheme #+ coord_fixed(ratio=1)
+p3 <- ggplot(df.3, aes(x, y)) +  geom_path(color="gray75", size=1) + customtheme #+ coord_fixed(ratio=1)
+
+grid.arrange(p1,p2,p3,nrow = 1)
+```
+
+## 3D Hilbert Curve
+
+Again, borrow some code from [here](https://pastebin.com/dGMjX5Pu).
+```{r}
+hilbert.3D<- function(n,...){
+  H.aux.3d <- function(n, x=0, y=0, z=0, dx=1, dy=0, dz=0, dx2=0, dy2=1, dz2=0, dx3=0, dy3=0, dz3=1)
+  {
+    if(n==0)
+    {
+      return(c(x , y , z))
+    }
+    else
+    {
+      n=n-1
+      s=2**n;
+      if(dx<0) x=x-s*dx;
+      if(dy<0) y=y-s*dy;
+      if(dz<0) z=z-s*dz;
+      if(dx2<0) x=x-s*dx2;
+      if(dy2<0) y=y-s*dy2;
+      if(dz2<0) z=z-s*dz2;
+      if(dx3<0) x=x-s*dx3;
+      if(dy3<0) y=y-s*dy3;
+      if(dz3<0) z=z-s*dz3;
+      return(rbind(
+        H.aux.3d(n, x, y, z, dx2, dy2, dz2, dx3, dy3, dz3, dx, dy, dz),
+        H.aux.3d(n, x+s*dx, y+s*dy, z+s*dz, dx3, dy3, dz3, dx, dy, dz, dx2, dy2, dz2),
+        H.aux.3d(n, x+s*dx+s*dx2, y+s*dy+s*dy2, z+s*dz+s*dz2, dx3, dy3, dz3, dx, dy, dz, dx2, dy2, dz2),
+        H.aux.3d(n, x+s*dx2, y+s*dy2, z+s*dz2, -dx, -dy, -dz, -dx2, -dy2, -dz2, dx3, dy3, dz3),
+        H.aux.3d(n, x+s*dx2+s*dx3, y+s*dy2+s*dy3, z+s*dz2+s*dz3, -dx, -dy, -dz, -dx2, -dy2, -dz2, dx3, dy3, dz3),
+        H.aux.3d(n, x+s*dx+s*dx2+s*dx3, y+s*dy+s*dy2+s*dy3, z+s*dz+s*dz2+s*dz3, -dx3, -dy3, -dz3, dx, dy, dz, -dx2, -dy2, -dz2),
+        H.aux.3d(n, x+s*dx+s*dx3, y+s*dy+s*dy3, z+s*dz+s*dz3, -dx3, -dy3, -dz3, dx, dy, dz, -dx2, -dy2, -dz2),
+        H.aux.3d(n, x+s*dx3, y+s*dy3, z+s*dz3, dx2, dy2, dz2, -dx3, -dy3, -dz3, -dx, -dy, -dz)
+      ))
+    }
+  }
+  return(setNames(as.data.frame(H.aux.3d(n=n)),  c('x','y','z')) )
+}
+```
+
+Some Plots: with 1 and 2 iterations.
+
+```{r warning=F,message=F,out.width='100%',fig.align='center'}
+library(plot3D)
+
+h.3d.1 <- hilbert.3D(n=1)
+h.3d.2 <- hilbert.3D(n=2)
+
+par(mfrow=c(1,2))
+with(h.3d.1,scatter3D(x, y, z, box=F, type='l',lwd=10 , col='black'))
+with(h.3d.2,scatter3D(x, y, z, box=F, type='l',lwd=10 , col='black'))
+```
+
+## Fill space with color
+
+I will use a $64*64*64$ RGB cube, so... 6 iterations for the 3D as $2^6=64$  and 9 for the 2D as $2^9=512$ and $512^2=64^3$...
+```{r warning=F,message=F,out.width='100%',fig.align='center',cache=T}
+
+h3d.64 <- setNames(hilbert.3D(6),c('r','g','b'))
+h3drgb.64 <- (h3d.64-min(h3d.64))/(max(h3d.64)-min(h3d.64)) #reescale to [0,1] as rgb() in R works that way.
+h2d.64 <- hilbert.2d.3(9)
+fill2d.64 <- cbind(h2d.64,h3drgb.64)
+
+ggplot(fill2d.64, aes(x, y)) +  geom_tile(aes(fill=rgb(r,g,b),color=rgb(r,g,b)))+theme_void()+
+  theme(legend.position="none")+scale_color_identity()+scale_fill_identity()+ coord_fixed(ratio=1)+theme(panel.background = element_rect(fill = "transparent", colour = NA),
+             plot.background = element_rect(fill = "transparent", colour = NA))
+```
+Less dimensions for the paths, $16*16*16$...
+```{r warning=F,message=F,out.width='100%',fig.align='center',cache=T}
+h3d.16 <- setNames(hilbert.3D(4),c('r','g','b'))
+h3drgb.16 <- (h3d.16-min(h3d.16))/(max(h3d.16)-min(h3d.16))
+h2d.16 <- hilbert.2d.3(6)
+fill2d.16 <- cbind(h2d.16,h3drgb.16)
+
+ggplot(fill2d.16, aes(x, y)) +  geom_path(aes(group='1',color=rgb(r,g,b)), size=1)+theme_void()+
+  theme(legend.position="none")+scale_color_identity()+ coord_fixed(ratio=1)
+
+```
+
+
+### Benchmarks
+And just for completition, benchmark the 3 algorithms.
+```{r warning=F,message=F,out.width='75%',fig.align='center',cache=T}
+library(microbenchmark)
+
+res <- data.frame()
+for(iter in 1:7){
+  aux <- microbenchmark(
+    hilbert.2d.1(n=iter),
+    hilbert.2d.2(n=iter),
+    hilbert.2d.3(n=iter),
+    unit='ms',times = 10  )
+  aux <- data.frame(iteration=iter,algo=as.character(summary(aux)$expr),time=summary(aux)$mean)
+  res <- rbind(res,aux)  
+}
+
+ggplot(res)+geom_line(aes(iteration,time,color=algo),size=1)+theme_classic()
+```
+
