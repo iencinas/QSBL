@@ -5,12 +5,44 @@
     <link>/authors/admin/</link>
       <atom:link href="/authors/admin/index.xml" rel="self" type="application/rss+xml" />
     <description>Academic</description>
-    <generator>Source Themes Academic (https://sourcethemes.com/academic/)</generator><language>en-us</language><lastBuildDate>Sat, 28 Dec 2019 00:00:00 +0000</lastBuildDate>
+    <generator>Source Themes Academic (https://sourcethemes.com/academic/)</generator><language>en-us</language><lastBuildDate>Fri, 03 Jan 2020 00:00:00 +0000</lastBuildDate>
     <image>
       <url>/img/icon-192.png</url>
       <title>Academic</title>
       <link>/authors/admin/</link>
     </image>
+    
+    <item>
+      <title>Convolution</title>
+      <link>/post/convolution/</link>
+      <pubDate>Fri, 03 Jan 2020 00:00:00 +0000</pubDate>
+      <guid>/post/convolution/</guid>
+      <description>
+
+
+&lt;p&gt;Convolute two probabilty distributions is just “sum” them: Simulation of the clasic convolution of 2 “squares”.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;x &amp;lt;- runif(10000,min = 0, max = 1)
+y &amp;lt;- runif(10000,min = 0, max = 1)
+z &amp;lt;-data.frame(z= x + y)
+
+ggplot(z)+geom_density(aes(z))+theme_classic()&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;/post/Convolution/index_files/figure-html/unif2%20-1.png&#34; width=&#34;75%&#34; style=&#34;display: block; margin: auto;&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;And now doing the convolution by its math definition.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;f.x &amp;lt;- function(x) dunif(x,0,1)
+f.y &amp;lt;- function(y) dunif(y,0,1)
+# convolution integral
+f.z &amp;lt;- function(z) integrate(function(x,z) f.y(z-x)*f.x(x),-Inf,Inf,z)$value
+df.z &amp;lt;- Vectorize(f.z)                    # need to vectorize the resulting fn.
+#df.z is the equivalen of dnorm, it returns the prob of a point
+
+z &amp;lt;- seq(0,2,0.01)
+conv &amp;lt;- data.frame(z=z,convolution=df.z(z))
+
+ggplot(conv)+geom_line(aes(z,convolution))+theme_classic()&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;/post/Convolution/index_files/figure-html/conv%20-1.png&#34; width=&#34;75%&#34; style=&#34;display: block; margin: auto;&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;Code from &lt;a href=&#34;https://stackoverflow.com/questions/23569133/adding-two-random-variables-via-convolution-in-r&#34;&gt;here&lt;/a&gt;, and a good explanation &lt;a href=&#34;http://colah.github.io/posts/2014-07-Understanding-Convolutions/#fn2&#34;&gt;here&lt;/a&gt;&lt;/p&gt;
+</description>
+    </item>
     
     <item>
       <title>Hilbert Curves</title>

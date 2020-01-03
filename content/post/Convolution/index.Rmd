@@ -1,0 +1,49 @@
+---
+title: "Convolution"
+authors: 
+- admin
+date: "2020-01-03"
+output: html_document
+summary: Convolution of distribution function (aka sum them).
+categories: ["R"]
+tags: ["R", "Convolution"]
+featured: false
+image:
+  caption: ""
+  focal_point: ""
+  preview_only: true
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+
+Convolute two probabilty distributions is just "sum" them: Simulation of the clasic convolution of 2 "squares".
+
+
+```{r unif2 ,out.width='75%',fig.align='center'}
+x <- runif(10000,min = 0, max = 1)
+y <- runif(10000,min = 0, max = 1)
+z <-data.frame(z= x + y)
+
+ggplot(z)+geom_density(aes(z))+theme_classic()
+```
+
+And now doing the convolution by its math definition.
+
+```{r conv ,out.width='75%',fig.align='center'}
+f.x <- function(x) dunif(x,0,1)
+f.y <- function(y) dunif(y,0,1)
+# convolution integral
+f.z <- function(z) integrate(function(x,z) f.y(z-x)*f.x(x),-Inf,Inf,z)$value
+df.z <- Vectorize(f.z)                    # need to vectorize the resulting fn.
+#df.z is the equivalen of dnorm, it returns the prob of a point
+
+z <- seq(0,2,0.01)
+conv <- data.frame(z=z,convolution=df.z(z))
+
+ggplot(conv)+geom_line(aes(z,convolution))+theme_classic()
+```
+
+Code from [here](https://stackoverflow.com/questions/23569133/adding-two-random-variables-via-convolution-in-r), and a good explanation [here](http://colah.github.io/posts/2014-07-Understanding-Convolutions/#fn2)

@@ -9,7 +9,7 @@ active = true  # Activate this widget? true/false
 weight = 1  # Order that this section will appear.
 
 title = "Qui scribit, bis legit"
-subtitle = ""
+subtitle = "(on construction)"
 
 [design]
   # Choose how many columns the section has. Valid values: 1 or 2.
