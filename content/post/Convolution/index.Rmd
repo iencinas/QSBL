@@ -45,5 +45,22 @@ conv <- data.frame(z=z,convolution=df.z(z))
 
 ggplot(conv)+geom_line(aes(z,convolution))+theme_classic()
 ```
+One last convolution (with numerical error i would say).
+
+```{r conv2 ,out.width='75%',fig.align='center'}
+f.x <- function(y) dnorm(y,10,1)   
+f.y <- function(x) dexp(x,0.1)     
+
+f.z <- function(z) integrate(function(x,z) f.y(z-x)*f.x(x),-Inf,Inf,z)$value
+df.z <- Vectorize(f.z)
+
+z <- seq(0,50,0.01)
+Conv <- data.frame(z=z,Convolution=df.z(z),fx=f.x(z),fy=f.y(z))
+
+ggplot(Conv)+geom_line(aes(z,Convolution,color='Convolution'))+
+  geom_line(aes(z,fx,color='normal distribution'))+
+  geom_line(aes(z,fy,color='exponential'))+theme_classic()+
+  theme(legend.position=c(0.55, 0.55))+labs(color='')
+```
 
 Code from [here](https://stackoverflow.com/questions/23569133/adding-two-random-variables-via-convolution-in-r), and a good explanation [here](http://colah.github.io/posts/2014-07-Understanding-Convolutions/#fn2)
