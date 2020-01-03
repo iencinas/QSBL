@@ -598,7 +598,22 @@ z &lt;- seq(0,2,0.01)
 conv &lt;- data.frame(z=z,convolution=df.z(z))
 
 ggplot(conv)+geom_line(aes(z,convolution))+theme_classic()</code></pre>
-<p><img src="/post/Convolution/index_files/figure-html/conv%20-1.png" width="75%" style="display: block; margin: auto;" /></p>
+<p><img src="/post/Convolution/index_files/figure-html/conv%20-1.png" width="75%" style="display: block; margin: auto;" />
+One last convolution (with numerical error i would say).</p>
+<pre class="r"><code>f.x &lt;- function(y) dnorm(y,10,1)   
+f.y &lt;- function(x) dexp(x,0.1)     
+
+f.z &lt;- function(z) integrate(function(x,z) f.y(z-x)*f.x(x),-Inf,Inf,z)$value
+df.z &lt;- Vectorize(f.z)
+
+z &lt;- seq(0,50,0.01)
+Conv &lt;- data.frame(z=z,Convolution=df.z(z),fx=f.x(z),fy=f.y(z))
+
+ggplot(Conv)+geom_line(aes(z,Convolution,color=&#39;Convolution&#39;))+
+  geom_line(aes(z,fx,color=&#39;normal distribution&#39;))+
+  geom_line(aes(z,fy,color=&#39;exponential&#39;))+theme_classic()+
+  theme(legend.position=c(0.55, 0.55))+labs(color=&#39;&#39;)</code></pre>
+<p><img src="/post/Convolution/index_files/figure-html/conv2%20-1.png" width="75%" style="display: block; margin: auto;" /></p>
 <p>Code from <a href="https://stackoverflow.com/questions/23569133/adding-two-random-variables-via-convolution-in-r">here</a>, and a good explanation <a href="http://colah.github.io/posts/2014-07-Understanding-Convolutions/#fn2">here</a></p>
 
     </div>
