@@ -4,7 +4,7 @@ authors:
 - admin
 date: "2020-01-03"
 output: html_document
-summary: Convolution of distribution function (aka sum them).
+summary: Convolution of distribution function.
 categories: ["R"]
 tags: ["R", "Convolution"]
 featured: false
@@ -16,6 +16,7 @@ image:
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
+library(ggplot2)
 ```
 
 

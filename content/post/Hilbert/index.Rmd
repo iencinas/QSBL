@@ -16,6 +16,10 @@ image:
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
+library(reshape2)
+library(plot3D)
+library(tidyverse)
+library(microbenchmark)
 ```
 
 ## 2D Hilbert Curves

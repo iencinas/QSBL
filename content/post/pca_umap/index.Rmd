@@ -2,7 +2,7 @@
 title: "PCA & UMAP"
 authors: 
 - admin
-date: "2019-12-28"
+date: "2020-10-10"
 output:   
   bookdown::html_document2:
     code_folding: hide
@@ -127,22 +127,7 @@ grid.arrange(p0,p1,nrow=1,widths=c(2,4))
 
 ```
 
-<!-- And for completiness, the same with a **__seven__** -->
 
-<!-- ```{r pcadigit7, cache=T,fig.width=9,fig.height=3, fig.cap="Left plot is a single **_seven_** in a 28*28 matrix ready for ggimage(). Rigth plot: 300 **_sevens_** in a model matrix"} -->
-<!-- #at this point i could have created a functions, but i'm a "copy/paste" guy. -->
-<!-- id <- which(y_train==7)[1]  -->
-<!-- img <- x_train[id,] -->
-<!-- img <- t(matrix(img, nrow=28L, byrow=T)) -->
-<!-- p0 <- ggimage(img)+theme(plot.margin = unit(c(0.5,1,0.5,0.5), "cm")) -->
-<!-- #matrix of 300 sevens -->
-<!-- id <- head(which(y_train== 7),300) -->
-<!-- img <- x_train[id,] -->
-<!-- p1 <- ggimage(img) -->
-<!-- grid.arrange(p0,p1,nrow=1,widths=c(2,4)) -->
-
-
-<!-- ``` -->
 
 <br />
 
@@ -300,7 +285,7 @@ From left to rigth:
 
 <br />
 
-# UMAP  
+# UMAP  ![](/pca_umap/index_files/overlap1-1.png)
 
 Umap in the other hand don't keep all the information. In UMAP there are "only" two distance: close-far, or you are a 7, or you are not a 7, there is no such things as 7 is similar to a 1 but very different from an 8.
 As UMAP keeps less information, it will need less axis to plot them. But then you can not interpret the relative positions of the groups, nor the position of individual (only if they are in a group or not).
