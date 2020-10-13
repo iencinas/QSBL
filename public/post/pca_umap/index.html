@@ -28,8 +28,7 @@
   
     
   
-  <meta name="description" content="PCA is not meant for what i’m going to do here, i think PCA is an exploratory tool (a very good one). But i’m going to try this.I’m not going to add MSD (even i would love to), because is not parctical (too sloow)Also at the end i will use some SVM.
-library(keras) #nowt gona use keras, is just to get the minst data setx_train &lt;- dataset_mnist()$train$xy_train &lt;- dataset_mnist()$train$yx_test &lt;- dataset_mnist()$test$xy_test &lt;- dataset_mnist()$test$y##PCA">
+  <meta name="description" content="Use and compare PCA and UMAP with the MNIST digit dataset.">
 
   
   <link rel="alternate" hreflang="en-us" href="/post/pca_umap/">
@@ -222,17 +221,16 @@ library(keras) #nowt gona use keras, is just to get the minst data setx_train &
   
   <meta property="twitter:card" content="summary">
   
-  <meta property="og:site_name" content="QuiScribitBisLegit">
+  <meta property="og:site_name" content="Qui Scribit Bis Legit">
   <meta property="og:url" content="/post/pca_umap/">
-  <meta property="og:title" content="SVM PCA &amp; UMAP | QuiScribitBisLegit">
-  <meta property="og:description" content="PCA is not meant for what i’m going to do here, i think PCA is an exploratory tool (a very good one). But i’m going to try this.I’m not going to add MSD (even i would love to), because is not parctical (too sloow)Also at the end i will use some SVM.
-library(keras) #nowt gona use keras, is just to get the minst data setx_train &lt;- dataset_mnist()$train$xy_train &lt;- dataset_mnist()$train$yx_test &lt;- dataset_mnist()$test$xy_test &lt;- dataset_mnist()$test$y##PCA"><meta property="og:image" content="/img/icon-192.png">
+  <meta property="og:title" content="PCA &amp; UMAP | Qui Scribit Bis Legit">
+  <meta property="og:description" content="Use and compare PCA and UMAP with the MNIST digit dataset."><meta property="og:image" content="/img/icon-192.png">
   <meta property="twitter:image" content="/img/icon-192.png"><meta property="og:locale" content="en-us">
   
     
-      <meta property="article:published_time" content="2020-01-05T00:00:00&#43;00:00">
+      <meta property="article:published_time" content="2020-10-10T00:00:00&#43;00:00">
     
-    <meta property="article:modified_time" content="2020-01-05T00:00:00&#43;00:00">
+    <meta property="article:modified_time" content="2020-10-10T00:00:00&#43;00:00">
   
 
   
@@ -260,10 +258,10 @@ library(keras) #nowt gona use keras, is just to get the minst data setx_train &
     "@type": "WebPage",
     "@id": "/post/pca_umap/"
   },
-  "headline": "SVM PCA \u0026 UMAP",
+  "headline": "PCA \u0026 UMAP",
   
-  "datePublished": "2020-01-05T00:00:00Z",
-  "dateModified": "2020-01-05T00:00:00Z",
+  "datePublished": "2020-10-10T00:00:00Z",
+  "dateModified": "2020-10-10T00:00:00Z",
   
   "author": {
     "@type": "Person",
@@ -272,13 +270,13 @@ library(keras) #nowt gona use keras, is just to get the minst data setx_train &
   
   "publisher": {
     "@type": "Organization",
-    "name": "QuiScribitBisLegit",
+    "name": "Qui Scribit Bis Legit",
     "logo": {
       "@type": "ImageObject",
       "url": "/img/icon-512.png"
     }
   },
-  "description": "PCA is not meant for what i’m going to do here, i think PCA is an exploratory tool (a very good one). But i’m going to try this.\rI’m not going to add MSD (even i would love to), because is not parctical (too sloow)\rAlso at the end i will use some SVM.\nlibrary(keras) #nowt gona use keras, is just to get the minst data set\rx_train \u0026lt;- dataset_mnist()$train$x\ry_train \u0026lt;- dataset_mnist()$train$y\rx_test \u0026lt;- dataset_mnist()$test$x\ry_test \u0026lt;- dataset_mnist()$test$y\r##PCA"
+  "description": "Use and compare PCA and UMAP with the MNIST digit dataset."
 }
 </script>
 
@@ -296,7 +294,7 @@ library(keras) #nowt gona use keras, is just to get the minst data setx_train &
 
 
 
-  <title>SVM PCA &amp; UMAP | QuiScribitBisLegit</title>
+  <title>PCA &amp; UMAP | Qui Scribit Bis Legit</title>
 
 </head>
 
@@ -499,7 +497,7 @@ library(keras) #nowt gona use keras, is just to get the minst data setx_train &
   
   
 <div class="article-container pt-3">
-  <h1>SVM PCA &amp; UMAP</h1>
+  <h1>PCA &amp; UMAP</h1>
 
   
 
@@ -511,6 +509,19 @@ library(keras) #nowt gona use keras, is just to get the minst data setx_train &
 
   
   
+  
+  
+  <div>
+    
+
+
+
+  
+  <span><a href="/authors/admin/">Ivan Encinas Trigo</a></span>
+
+  </div>
+  
+  
 
   
   <span class="article-date">
@@ -518,7 +529,7 @@ library(keras) #nowt gona use keras, is just to get the minst data setx_train &
     
       
     
-    Jan 5, 2020
+    Oct 10, 2020
   </span>
   
 
@@ -534,6 +545,10 @@ library(keras) #nowt gona use keras, is just to get the minst data setx_train &
   
 
   
+  
+  <span class="middot-divider"></span>
+  <span class="article-categories">
+    <i class="fas fa-folder mr-1"></i><a href="/categories/r/">R</a></span>
   
 
 </div>
@@ -564,68 +579,274 @@ library(keras) #nowt gona use keras, is just to get the minst data setx_train &
       
 
 
-<p>PCA is not meant for what i’m going to do here, i think PCA is an exploratory tool (a very good one). But i’m going to try <a href="https://colah.github.io/posts/2014-10-Visualizing-MNIST/">this</a>.
-I’m not going to add MSD (even i would love to), because is not parctical (<a href="https://umap-learn.readthedocs.io/en/latest/benchmarking.html">too sloow</a>)
-Also at the end i will use some SVM.</p>
-<pre class="r"><code>library(keras)  #nowt gona use keras, is just to get the minst data set
-x_train &lt;- dataset_mnist()$train$x
-y_train &lt;- dataset_mnist()$train$y
-x_test &lt;- dataset_mnist()$test$x
-y_test &lt;- dataset_mnist()$test$y</code></pre>
-<p>##PCA</p>
-<pre class="r"><code>system.time({
-  pca.res &lt;- prcomp(x_train) 
-})</code></pre>
-<pre><code>   user  system elapsed 
-   1.45    0.30    1.78 </code></pre>
-<p>pca.test.1 &lt;- prcomp(pca.test,
-center = TRUE,
-scale. = TRUE)
-y_train &lt;- mnist<span class="math inline">\(train\)</span>y
-names(pca.test.1)
-plot(pca.test.1, type = “l”)</p>
-<p>fviz_eig(pca.test.1,ncp = 40)
-v &lt;- pca.test.1$rotation
-v2 &lt;- data.frame(v)
-ggplot(v2)+
-geom_segment(aes(0,0,xend=PC1,yend=PC2), arrow = arrow(length = unit(0.5, “cm”)))+
-geom_text(position =position_jitter(w = 0.1, h = 0.1),
-color=‘blue’,
-aes(PC1,PC2,label=rownames(v2)))
-ggplot(v2)+
-geom_segment(aes(0,0,xend=PC3,yend=PC4), arrow = arrow(length = unit(0.5, “cm”)))+
-geom_text(position =position_jitter(w = 0.1, h = 0.1),
-color=‘blue’,
-aes(PC3,PC4,label=rownames(v2)))</p>
-<p>ggplot(v2)+
-geom_segment(aes(0,0,xend=PC4,yend=PC5), arrow = arrow(length = unit(0.5, “cm”)))+
-geom_text(position =position_jitter(w = 0.1, h = 0.1),
-color=‘blue’,
-aes(PC4,PC5,label=rownames(v2)))</p>
-<p>library(factoextra)
-help(“fviz_pca_ind”)
-fviz_pca_ind(pca.test.1,geom=‘point’,axes=c(1,2),
-col.ind = factor(y_train), # Color by the quality of representation
-repel = TRUE # Avoid text overlapping
-)</p>
-<p>fviz_pca_ind(pca.test.1,geom=‘point’,axes=c(3,4),
-col.ind = factor(y_train), # Color by the quality of representation
-repel = TRUE # Avoid text overlapping
-)</p>
-<p>fviz_pca_biplot(pca.test.1,geom=‘point’,axes=c(1,2),
-col.ind = factor(tags), # Color by the quality of representation
-col.var = “black”, fill.var = “white”,
-repel = TRUE # Avoid text overlapping
-)</p>
-<p>fviz_pca_biplot(pca.test.1,geom=‘point’,axes=c(2,3),
-col.ind = factor(tags), # Color by the quality of representation
-col.var = “black”, fill.var = “white”,
-repel = TRUE # Avoid text overlapping
-)</p>
-<p>fviz_pca_ind(pca.test.1,geom=‘point’,axes=c(2,3),
-col.ind = factor(tags), # Color by the quality of representation
-repel = TRUE # Avoid text overlapping
-)</p>
+<p>I’m going to try something like <a href="https://colah.github.io/posts/2014-10-Visualizing-MNIST/">this</a>.</p>
+<p>I will use a sample of the MNIST digit dataset that is in the keras library (i will not use keras here).</p>
+<pre class="r"><code>#nowt gona use keras, is just to get the minst data set
+library(keras) 
+mnist &lt;- dataset_mnist()
+x_train &lt;- mnist$train$x
+y_train &lt;- mnist$train$y
+x_test &lt;- mnist$test$x
+y_test &lt;- mnist$test$y
+
+dim(x_train) &lt;- c(nrow(x_train),784)
+dim(x_test)  &lt;- c(nrow(x_test),784)
+
+#and i&#39;m going to use a small sample to speed up things
+set.seed(123)
+id &lt;- sample(1:nrow(x_train),size = 12000,replace = F)
+x_train &lt;- x_train[id,]
+y_train &lt;- y_train[id]</code></pre>
+<div id="pca" class="section level1">
+<h1>PCA</h1>
+<p>If I have to explain in a high level perspective, super-approximated, what a PCA does: It creates 2 spaces, that correspond to distance between lines of a matrix (points or observations) and other that correspond to the correlation between columns of the same matrix (variables). One is the dual space of the other, and math-magic you can plot both in the same graph.
+An important fact of PCA is that it keeps ALL information of the matrix, so if you take all components, you can reproduce the full matrix.
+What information?: distance between points and correlation between columns.
+So you can not plug any matrix in a PCA, but a <em>model</em> <em>matrix</em> where each row is a individual object and each columns is a variable.
+So a matrix that defines a image, is not suited for PCA. Let’s see this with an example:</p>
+<p>This is a matrix with a “one” ready to be ploted with ggimage():</p>
+<span class="math display">\[\begin{bmatrix}
+0 &amp; 0 &amp; 0 &amp; 0 &amp; 0 &amp; 0\\ 
+0 &amp; 0 &amp; 1 &amp; 1 &amp; 0 &amp; 0\\ 
+0 &amp; 0 &amp; 1 &amp; 1 &amp; 0 &amp; 0\\ 
+0 &amp; 0 &amp; 1 &amp; 1 &amp; 0 &amp; 0\\ 
+0 &amp; 0 &amp; 1 &amp; 1 &amp; 0 &amp; 0\\ 
+0 &amp; 0 &amp; 0 &amp; 0 &amp; 0 &amp; 0
+\end{bmatrix}\]</span>
+And this is the same data, but as a single row of a <em>model matrix</em> ready to be fed into a PCA:
+<span class="math display">\[\begin{bmatrix}
+X1 &amp; ...  &amp; X6 &amp; X7 &amp; X8 &amp; X9 &amp; X10 &amp; X11 &amp; X12 &amp; ... &amp; X36\\ 
+ 0&amp; ... &amp; 0 &amp; 0 &amp; 0 &amp; 1 &amp; 1 &amp; 0 &amp; 0 &amp; ... &amp; 0 &amp;\end{bmatrix}\]</span>
+<p><br /></p>
+<div id="image-matrix-vrs-model-matrix" class="section level2">
+<h2>Image Matrix vrs Model Matrix</h2>
+<div id="ones" class="section level3">
+<h3>One’s</h3>
+<p>What we see: a image matrix of a <strong><em>one</em></strong>, versus what PCA “see” (a matrix of 300 ones)</p>
+<pre class="r"><code>library(ggmap)
+library(gridExtra)
+#image of one &quot;one&quot;
+id &lt;- which(y_train==1)[2] #pick the second one, because the first is &quot;ugly&quot;
+img &lt;- x_train[id,]
+img &lt;- t(matrix(img, nrow=28L, byrow=T))
+p0 &lt;- ggimage(img)+theme(plot.margin = unit(c(0.4,1,0.4,0.4), &quot;cm&quot;))
+#matrix of 300 ones
+id &lt;- head(which(y_train== 1),300)
+img &lt;- x_train[id,]
+p1 &lt;- ggimage(img)
+
+grid.arrange(p0,p1,nrow=1,widths=c(2,4))</code></pre>
+<div class="figure" style="text-align: center"><span id="fig:pcadigit1"></span>
+<img src="/post/pca_umap/index_files/figure-html/pcadigit1-1.png" alt="Left: a ggimage() of a **_one_** in a 28*28 matrix. Rigth: Visual representation of 300 **_ones_** in a model matrix with 28*28 columns and 300 lines" width="864" />
+<p class="caption">
+Figure 1: Left: a ggimage() of a <strong><em>one</em></strong> in a 28<em>28 matrix. Rigth: Visual representation of 300 <strong><em>ones</em></strong> in a model matrix with 28</em>28 columns and 300 lines
+</p>
+</div>
+<p><br /></p>
+</div>
+<div id="zeros" class="section level3">
+<h3>Zero’s</h3>
+<p>The same but with a <strong><em>zero</em></strong></p>
+<pre class="r"><code>id &lt;- which(y_train==0)[1] 
+img &lt;- x_train[id,]
+img &lt;- t(matrix(img, nrow=28L, byrow=T))
+p0 &lt;- ggimage(img)+theme(plot.margin = unit(c(0.5,1,0.5,0.5), &quot;cm&quot;))
+#matrix of 300 zeros
+id &lt;- head(which(y_train== 0),300)
+img &lt;- x_train[id,]
+p1 &lt;- ggimage(img)
+grid.arrange(p0,p1,nrow=1,widths=c(2,4))</code></pre>
+<div class="figure" style="text-align: center"><span id="fig:pcadigit0"></span>
+<img src="/post/pca_umap/index_files/figure-html/pcadigit0-1.png" alt="Left: a ggimage() of a **_zero_** in a 28*28 matrix. Rigth: Visual representation of 300 **_zeros_** in a model matrix" width="864" />
+<p class="caption">
+Figure 2: Left: a ggimage() of a <strong><em>zero</em></strong> in a 28*28 matrix. Rigth: Visual representation of 300 <strong><em>zeros</em></strong> in a model matrix
+</p>
+</div>
+<p><br /></p>
+</div>
+<div id="both" class="section level3">
+<h3>Both</h3>
+<p>A visual way to check correlation between different objects, is to overlap the columns, and see how many coincidences they have.
+Here we will overlap 300 <strong>ones</strong> (in blue) and 300 <strong>zeros</strong> (in red), with the overlaps in white.</p>
+<pre class="r"><code>#image
+idones &lt;- head(which(y_train == 1),300)
+img1 &lt;- x_train[idones,]
+dim(img1) &lt;- c(300,28,28)
+idzeros &lt;- head(which(y_train == 0),300)
+img0 &lt;- x_train[idzeros,]
+dim(img0) &lt;- c(300,28,28)
+digitoverlap &lt;- array(rep(0,28*28*3), c(28,28,3))
+for(i in 1:300){
+  for(j in 1:28){
+    for(k in 1:28){
+    if(img1[i,j,k]&gt;0) digitoverlap[j,k,3] &lt;- digitoverlap[j,k,3]+1
+    if(img0[i,j,k]&gt;0) digitoverlap[j,k,1] &lt;- digitoverlap[j,k,1]+1
+    if(img1[i,j,k]&gt;0 &amp; img0[i,j,k]&gt;0) digitoverlap[j,k,2] &lt;- digitoverlap[j,k,2]+1 #add white
+    }
+  }
+}
+p0 &lt;- ggimage(digitoverlap)+theme(plot.margin = unit(c(0.4,1,0.4,0.4), &quot;cm&quot;))
+
+#model matrix
+img1 &lt;- t(x_train[idones,])
+img0 &lt;- t(x_train[idzeros,])
+matrixoverlap &lt;- array(rep(NA,728*300*3), c( 300,728, 3))
+for(i in 1:728){
+  for(j in 1:300){
+    if(img1[i,j]==0 &amp; img0[i,j]==0) matrixoverlap[j,i,] &lt;- c(0,0,0)
+    if(img1[i,j]&gt;0  &amp; img0[i,j]==0) matrixoverlap[j,i,] &lt;- c(0,0,1)
+    if(img1[i,j]==0 &amp; img0[i,j]&gt;0)  matrixoverlap[j,i,] &lt;- c(1,0,0)
+    if(img1[i,j]&gt;0  &amp; img0[i,j]&gt;0)  matrixoverlap[j,i,] &lt;- c(1,1,1)
+    
+  }
+}
+p1 &lt;- ggimage(matrixoverlap)
+
+grid.arrange(p0,p1,nrow=1,widths=c(2,4))</code></pre>
+<div class="figure" style="text-align: center"><span id="fig:overlap1"></span>
+<img src="/post/pca_umap/index_files/figure-html/overlap1-1.png" alt="Left: Plot of 300 **__ones__** (blue) and **__zeros__** (red) overlaped (white for overlapet areas). Rigth: The same overlap, but in model matrix." width="864" />
+<p class="caption">
+Figure 3: Left: Plot of 300 <strong><strong>ones</strong></strong> (blue) and <strong><strong>zeros</strong></strong> (red) overlaped (white for overlapet areas). Rigth: The same overlap, but in model matrix.
+</p>
+</div>
+<p><br /></p>
+</div>
+</div>
+<div id="the-pca" class="section level2">
+<h2>The PCA</h2>
+<p>I think is pretty intuitive that the shapes of <strong>1</strong> and <strong>0</strong> are the more uncorrelated ones, ergo they will be in oposites sides of the first component of the PCA:</p>
+<pre class="r"><code>pca.model &lt;- prcomp(x_train) 
+
+pca.df &lt;- data.frame(pca.model$x[,1:2])
+
+pca.df$y_train &lt;- y_train
+centroid &lt;- pca.df%&gt;%group_by(y_train)%&gt;%summarise(PC1=mean(PC1),PC2=mean(PC2))
+
+ggplot(pca.df)+geom_point(aes(PC1,PC2,color=factor(y_train)))+
+  geom_text(data=centroid,aes(PC1,PC2,label=y_train),size=5)+labs(color=&#39;Digit&#39;)</code></pre>
+<div class="figure" style="text-align: center"><span id="fig:pca"></span>
+<img src="/post/pca_umap/index_files/figure-html/pca-1.png" alt="digit-MINST PCA of first 2 components" width="576" />
+<p class="caption">
+Figure 4: digit-MINST PCA of first 2 components
+</p>
+</div>
+<p><br />
+Remember that PCA keeps the relative distance between individuals, so obviously <strong>0</strong> is far away from <strong>1</strong>, and <strong>5</strong> will be kept close to <strong>6</strong>, <strong>4</strong> close to <strong>9</strong>, etc… But also those 4’s that are more look-alike a <strong>9</strong>, will be more close to the <strong>9</strong> centroid, and <strong>7</strong>’s that are more similar to <strong>1</strong> will be closer to the <strong>1</strong> centroid…
+That is a lot of information, and requires a lot of axis to keep it, and a lot of granularity to display. Thus the graph looks “fuzzy”, and 2 components is really not enough to display this complexity.<br />
+But it allow us to find the more <strong>1</strong> of the <strong>8</strong>`s, the more <strong>0</strong> of the <strong>8</strong>, and the more <strong>9</strong> …. and with only the 2 first components.</p>
+<pre class="r"><code>library(ggmap)
+library(gridExtra)
+
+pca.df$id &lt;- 1:nrow(pca.df)
+# the more 1 of the 8&#39;s
+id1 &lt;- (pca.df%&gt;%filter(y_train==8)%&gt;%group_by()%&gt;%filter(PC1==max(PC1)))$id
+img &lt;- x_train[id1,]
+dim(img) &lt;- c(28,28)
+p1 &lt;- ggimage(img)+theme(plot.margin = unit(c(0,1,0,0.5), &quot;cm&quot;))
+# the more 0....
+id1 &lt;- (pca.df%&gt;%filter(y_train==8)%&gt;%group_by()%&gt;%filter(PC1==min(PC1)))$id
+img &lt;- x_train[id1,]
+dim(img) &lt;- c(28,28)
+p0 &lt;- ggimage(img)+theme(plot.margin = unit(c(0,1,0,0.5), &quot;cm&quot;))
+# the more 9....
+id1 &lt;- (pca.df%&gt;%filter(y_train==8)%&gt;%group_by()%&gt;%filter(PC2==min(PC2)))$id
+img &lt;- x_train[id1,]
+dim(img) &lt;- c(28,28)
+p9 &lt;- ggimage(img)+theme(plot.margin = unit(c(0,1,0,0.5), &quot;cm&quot;))
+
+grid.arrange(arrangeGrob(p1,top=&quot;The more 1 of the 8&#39;s&quot;),
+             arrangeGrob(p0,top=&quot;The more 0 of the 8&#39;s&quot;),
+             arrangeGrob(p9,top=&quot;&#39;The more 9 of the 8&#39;&quot;),nrow=1)</code></pre>
+<div class="figure" style="text-align: center"><span id="fig:eith"></span>
+<img src="/post/pca_umap/index_files/figure-html/eith-1.png" alt="Some 8's" width="864" />
+<p class="caption">
+Figure 5: Some 8’s
+</p>
+</div>
+</div>
+<div id="reverse-de-pca" class="section level2">
+<h2>Reverse de PCA</h2>
+<p>Now i’m going to create 4 points, meant to be blueprints that maximaze each component:</p>
+<span class="math display">\[\begin{bmatrix}
+PC1 &amp; PC2 &amp;\\ 
+ 2000 &amp; 0 \\
+ -2000 &amp; 0 \\
+ 0 &amp; 2000 \\
+ 0 &amp; -2000 \end{bmatrix}\]</span>
+<pre class="r"><code>blueprints &lt;- data.frame(PC1=c(2000,-2000,0,0),PC2=c(0,0,2000,-2000))
+
+ggplot(pca.df)+geom_point(aes(PC1,PC2,color=factor(y_train)))+
+  labs(color=&#39;Digit&#39;)+
+  geom_point(data=blueprints,aes(PC1,PC2),color=&#39;black&#39;,size=3)</code></pre>
+<div class="figure" style="text-align: center"><span id="fig:blueprints"></span>
+<img src="/post/pca_umap/index_files/figure-html/blueprints-1.png" alt="4 fake digits on the PCA plane" width="576" />
+<p class="caption">
+Figure 6: 4 fake digits on the PCA plane
+</p>
+</div>
+<p><br /></p>
+<p>Let’s revers them and see how they look (remember that with ggimage(), white is 255 and black is 0, the opposite of image(), also there is a need of add a t() in image() )</p>
+<pre class="r"><code>library(ggmap)
+library(gridExtra)
+Xhat &lt;- as.matrix(blueprints)%*%t(pca.model$rotation[,1:2])
+
+dim(Xhat) &lt;- c(4,28,28)
+p1 &lt;- ggimage(Xhat[1,,])+theme(plot.margin = unit(c(0,1,0,0.5), &quot;cm&quot;))
+p2 &lt;- ggimage(Xhat[2,,])+theme(plot.margin = unit(c(0,1,0,0.5), &quot;cm&quot;))
+p3 &lt;- ggimage(Xhat[3,,])+theme(plot.margin = unit(c(0,1,0,0.5), &quot;cm&quot;))
+p4 &lt;- ggimage(Xhat[4,,])+theme(plot.margin = unit(c(0,1,0,0.5), &quot;cm&quot;))
+
+grid.arrange(arrangeGrob(p1,top=&#39;a) PC1: +2000, PC2: 0&#39;),
+             arrangeGrob(p2,top=&#39;b) PC1: -2000, PC2: 0&#39;),
+             arrangeGrob(p3,top=&#39;c) PC1: 0, PC2: 2000&#39;),
+             arrangeGrob(p4,top=&#39;d) PC1: 0, PC2: -2000&#39;),nrow=1)</code></pre>
+<div class="figure" style="text-align: center"><span id="fig:reverse"></span>
+<img src="/post/pca_umap/index_files/figure-html/reverse-1.png" alt="the 'real' 4 fake digits" width="864" />
+<p class="caption">
+Figure 7: the ‘real’ 4 fake digits
+</p>
+</div>
+From left to rigth:<br />
+
+<ol type="a">
+<li>
+i’m a 1, and definetly not a 0
+</li>
+<li>
+i’m a 0, and definetly not a 1
+</li>
+<li>
+i’m definetly not a 9 and i have some width in the bottom half.
+</li>
+<li>
+i look like a 9, and i’m thin in the bottom half.
+</li>
+</ol>
+<p><br /></p>
+</div>
+</div>
+<div id="umap" class="section level1">
+<h1>UMAP <img src="/pca_umap/index_files/overlap1-1.png" /></h1>
+<p>Umap in the other hand don’t keep all the information. In UMAP there are “only” two distance: close-far, or you are a 7, or you are not a 7, there is no such things as 7 is similar to a 1 but very different from an 8.
+As UMAP keeps less information, it will need less axis to plot them. But then you can not interpret the relative positions of the groups, nor the position of individual (only if they are in a group or not).
+(actually Umap does have this distance information between groups, but it gives to it so few weigth in the computation, that you can not rely on results)
+here the UMAP:</p>
+<pre class="r"><code>library(umap)
+umap.model &lt;- umap(x_train,verbose=T,n_components=2,n_epochs=1000)
+umap.df &lt;- as.data.frame(umap.model$layout)
+umap.df$y_train &lt;- y_train
+
+centroid &lt;- umap.df%&gt;%group_by(y_train)%&gt;%summarise(V1=mean(V1),V2=mean(V2))
+
+ggplot(umap.df,aes(V1,V2))+geom_point(aes(color=factor(y_train)))+
+  geom_text(data=centroid,aes(V1,V2,label=y_train),size=5)+labs(color=&#39;Digit&#39;)</code></pre>
+<div class="figure" style="text-align: center"><span id="fig:UMAP"></span>
+<img src="/post/pca_umap/index_files/figure-html/UMAP-1.png" alt="UMAP plot of digits-MNIST" width="576" />
+<p class="caption">
+Figure 8: UMAP plot of digits-MNIST
+</p>
+</div>
+</div>
 
     </div>
 
@@ -634,6 +855,18 @@ repel = TRUE # Avoid text overlapping
 
 
 
+
+<div class="article-tags">
+  
+  <a class="badge badge-light" href="/tags/r/">R</a>
+  
+  <a class="badge badge-light" href="/tags/plot/">plot</a>
+  
+  <a class="badge badge-light" href="/tags/pca/">pca</a>
+  
+  <a class="badge badge-light" href="/tags/umap/">umap</a>
+  
+</div>
 
 
 
@@ -648,7 +881,7 @@ repel = TRUE # Avoid text overlapping
       
       
       <li>
-        <a href="https://twitter.com/intent/tweet?url=/post/pca_umap/&amp;text=SVM%20PCA%20&amp;amp;%20UMAP" target="_blank" rel="noopener" class="share-btn-twitter">
+        <a href="https://twitter.com/intent/tweet?url=/post/pca_umap/&amp;text=PCA%20&amp;amp;%20UMAP" target="_blank" rel="noopener" class="share-btn-twitter">
           <i class="fab fa-twitter"></i>
         </a>
       </li>
@@ -661,7 +894,7 @@ repel = TRUE # Avoid text overlapping
       
       
       <li>
-        <a href="https://www.facebook.com/sharer.php?u=/post/pca_umap/&amp;t=SVM%20PCA%20&amp;amp;%20UMAP" target="_blank" rel="noopener" class="share-btn-facebook">
+        <a href="https://www.facebook.com/sharer.php?u=/post/pca_umap/&amp;t=PCA%20&amp;amp;%20UMAP" target="_blank" rel="noopener" class="share-btn-facebook">
           <i class="fab fa-facebook"></i>
         </a>
       </li>
@@ -674,7 +907,7 @@ repel = TRUE # Avoid text overlapping
       
       
       <li>
-        <a href="mailto:?subject=SVM%20PCA%20&amp;amp;%20UMAP&amp;body=/post/pca_umap/" target="_blank" rel="noopener" class="share-btn-email">
+        <a href="mailto:?subject=PCA%20&amp;amp;%20UMAP&amp;body=/post/pca_umap/" target="_blank" rel="noopener" class="share-btn-email">
           <i class="fas fa-envelope"></i>
         </a>
       </li>
@@ -687,7 +920,7 @@ repel = TRUE # Avoid text overlapping
       
       
       <li>
-        <a href="https://www.linkedin.com/shareArticle?url=/post/pca_umap/&amp;title=SVM%20PCA%20&amp;amp;%20UMAP" target="_blank" rel="noopener" class="share-btn-linkedin">
+        <a href="https://www.linkedin.com/shareArticle?url=/post/pca_umap/&amp;title=PCA%20&amp;amp;%20UMAP" target="_blank" rel="noopener" class="share-btn-linkedin">
           <i class="fab fa-linkedin-in"></i>
         </a>
       </li>
@@ -700,7 +933,7 @@ repel = TRUE # Avoid text overlapping
       
       
       <li>
-        <a href="https://web.whatsapp.com/send?text=SVM%20PCA%20&amp;amp;%20UMAP%20/post/pca_umap/" target="_blank" rel="noopener" class="share-btn-whatsapp">
+        <a href="https://web.whatsapp.com/send?text=PCA%20&amp;amp;%20UMAP%20/post/pca_umap/" target="_blank" rel="noopener" class="share-btn-whatsapp">
           <i class="fab fa-whatsapp"></i>
         </a>
       </li>
@@ -713,7 +946,7 @@ repel = TRUE # Avoid text overlapping
       
       
       <li>
-        <a href="https://service.weibo.com/share/share.php?url=/post/pca_umap/&amp;title=SVM%20PCA%20&amp;amp;%20UMAP" target="_blank" rel="noopener" class="share-btn-weibo">
+        <a href="https://service.weibo.com/share/share.php?url=/post/pca_umap/&amp;title=PCA%20&amp;amp;%20UMAP" target="_blank" rel="noopener" class="share-btn-weibo">
           <i class="fab fa-weibo"></i>
         </a>
       </li>
@@ -732,6 +965,10 @@ repel = TRUE # Avoid text overlapping
 
 
 
+  
+  
+    
+  
   
 
 
@@ -782,6 +1019,13 @@ repel = TRUE # Avoid text overlapping
   
   
   <div class="post-nav-item">
+    <div class="meta-nav">Next</div>
+    <a href="/post/2020-10-13-/" rel="next"></a>
+  </div>
+  
+  
+  
+  <div class="post-nav-item">
     <div class="meta-nav">Previous</div>
     <a href="/post/convolution/" rel="prev">Convolution</a>
   </div>
@@ -793,6 +1037,19 @@ repel = TRUE # Avoid text overlapping
 
 
   
+  
+  <div class="article-widget content-widget-hr">
+    <h3>Related</h3>
+    <ul>
+      
+      <li><a href="/post/hilbert/">Hilbert Curves</a></li>
+      
+      <li><a href="/post/convolution/">Convolution</a></li>
+      
+      <li><a href="/post/2015-07-23-r-rmarkdown/">Hello R Markdown</a></li>
+      
+    </ul>
+  </div>
   
 
 
