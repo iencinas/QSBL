@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes" ?>
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
-    <title>Qui scribit, bis legit | QuiScribitBisLegit</title>
+    <title>Qui scribit, bis legit | Qui Scribit Bis Legit</title>
     <link>/qui/</link>
       <atom:link href="/qui/index.xml" rel="self" type="application/rss+xml" />
     <description>Qui scribit, bis legit</description>

@@ -1,16 +1,295 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes" ?>
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
-    <title>R | QuiScribitBisLegit</title>
+    <title>R | Qui Scribit Bis Legit</title>
     <link>/tags/r/</link>
       <atom:link href="/tags/r/index.xml" rel="self" type="application/rss+xml" />
     <description>R</description>
-    <generator>Source Themes Academic (https://sourcethemes.com/academic/)</generator><language>en-us</language><lastBuildDate>Fri, 03 Jan 2020 00:00:00 +0000</lastBuildDate>
+    <generator>Source Themes Academic (https://sourcethemes.com/academic/)</generator><language>en-us</language><lastBuildDate>Sat, 10 Oct 2020 00:00:00 +0000</lastBuildDate>
     <image>
       <url>/img/icon-192.png</url>
       <title>R</title>
       <link>/tags/r/</link>
     </image>
+    
+    <item>
+      <title>PCA &amp; UMAP</title>
+      <link>/post/pca_umap/</link>
+      <pubDate>Sat, 10 Oct 2020 00:00:00 +0000</pubDate>
+      <guid>/post/pca_umap/</guid>
+      <description>
+
+
+&lt;p&gt;I’m going to try something like &lt;a href=&#34;https://colah.github.io/posts/2014-10-Visualizing-MNIST/&#34;&gt;this&lt;/a&gt;.&lt;/p&gt;
+&lt;p&gt;I will use a sample of the MNIST digit dataset that is in the keras library (i will not use keras here).&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;#nowt gona use keras, is just to get the minst data set
+library(keras) 
+mnist &amp;lt;- dataset_mnist()
+x_train &amp;lt;- mnist$train$x
+y_train &amp;lt;- mnist$train$y
+x_test &amp;lt;- mnist$test$x
+y_test &amp;lt;- mnist$test$y
+
+dim(x_train) &amp;lt;- c(nrow(x_train),784)
+dim(x_test)  &amp;lt;- c(nrow(x_test),784)
+
+#and i&amp;#39;m going to use a small sample to speed up things
+set.seed(123)
+id &amp;lt;- sample(1:nrow(x_train),size = 12000,replace = F)
+x_train &amp;lt;- x_train[id,]
+y_train &amp;lt;- y_train[id]&lt;/code&gt;&lt;/pre&gt;
+&lt;div id=&#34;pca&#34; class=&#34;section level1&#34;&gt;
+&lt;h1&gt;PCA&lt;/h1&gt;
+&lt;p&gt;If I have to explain in a high level perspective, super-approximated, what a PCA does: It creates 2 spaces, that correspond to distance between lines of a matrix (points or observations) and other that correspond to the correlation between columns of the same matrix (variables). One is the dual space of the other, and math-magic you can plot both in the same graph.
+An important fact of PCA is that it keeps ALL information of the matrix, so if you take all components, you can reproduce the full matrix.
+What information?: distance between points and correlation between columns.
+So you can not plug any matrix in a PCA, but a &lt;em&gt;model&lt;/em&gt; &lt;em&gt;matrix&lt;/em&gt; where each row is a individual object and each columns is a variable.
+So a matrix that defines a image, is not suited for PCA. Let’s see this with an example:&lt;/p&gt;
+&lt;p&gt;This is a matrix with a “one” ready to be ploted with ggimage():&lt;/p&gt;
+&lt;span class=&#34;math display&#34;&gt;\[\begin{bmatrix}
+0 &amp;amp; 0 &amp;amp; 0 &amp;amp; 0 &amp;amp; 0 &amp;amp; 0\\ 
+0 &amp;amp; 0 &amp;amp; 1 &amp;amp; 1 &amp;amp; 0 &amp;amp; 0\\ 
+0 &amp;amp; 0 &amp;amp; 1 &amp;amp; 1 &amp;amp; 0 &amp;amp; 0\\ 
+0 &amp;amp; 0 &amp;amp; 1 &amp;amp; 1 &amp;amp; 0 &amp;amp; 0\\ 
+0 &amp;amp; 0 &amp;amp; 1 &amp;amp; 1 &amp;amp; 0 &amp;amp; 0\\ 
+0 &amp;amp; 0 &amp;amp; 0 &amp;amp; 0 &amp;amp; 0 &amp;amp; 0
+\end{bmatrix}\]&lt;/span&gt;
+And this is the same data, but as a single row of a &lt;em&gt;model matrix&lt;/em&gt; ready to be fed into a PCA:
+&lt;span class=&#34;math display&#34;&gt;\[\begin{bmatrix}
+X1 &amp;amp; ...  &amp;amp; X6 &amp;amp; X7 &amp;amp; X8 &amp;amp; X9 &amp;amp; X10 &amp;amp; X11 &amp;amp; X12 &amp;amp; ... &amp;amp; X36\\ 
+ 0&amp;amp; ... &amp;amp; 0 &amp;amp; 0 &amp;amp; 0 &amp;amp; 1 &amp;amp; 1 &amp;amp; 0 &amp;amp; 0 &amp;amp; ... &amp;amp; 0 &amp;amp;\end{bmatrix}\]&lt;/span&gt;
+&lt;p&gt;&lt;br /&gt;&lt;/p&gt;
+&lt;div id=&#34;image-matrix-vrs-model-matrix&#34; class=&#34;section level2&#34;&gt;
+&lt;h2&gt;Image Matrix vrs Model Matrix&lt;/h2&gt;
+&lt;div id=&#34;ones&#34; class=&#34;section level3&#34;&gt;
+&lt;h3&gt;One’s&lt;/h3&gt;
+&lt;p&gt;What we see: a image matrix of a &lt;strong&gt;&lt;em&gt;one&lt;/em&gt;&lt;/strong&gt;, versus what PCA “see” (a matrix of 300 ones)&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;library(ggmap)
+library(gridExtra)
+#image of one &amp;quot;one&amp;quot;
+id &amp;lt;- which(y_train==1)[2] #pick the second one, because the first is &amp;quot;ugly&amp;quot;
+img &amp;lt;- x_train[id,]
+img &amp;lt;- t(matrix(img, nrow=28L, byrow=T))
+p0 &amp;lt;- ggimage(img)+theme(plot.margin = unit(c(0.4,1,0.4,0.4), &amp;quot;cm&amp;quot;))
+#matrix of 300 ones
+id &amp;lt;- head(which(y_train== 1),300)
+img &amp;lt;- x_train[id,]
+p1 &amp;lt;- ggimage(img)
+
+grid.arrange(p0,p1,nrow=1,widths=c(2,4))&lt;/code&gt;&lt;/pre&gt;
+&lt;div class=&#34;figure&#34; style=&#34;text-align: center&#34;&gt;&lt;span id=&#34;fig:pcadigit1&#34;&gt;&lt;/span&gt;
+&lt;img src=&#34;/post/pca_umap/index_files/figure-html/pcadigit1-1.png&#34; alt=&#34;Left: a ggimage() of a **_one_** in a 28*28 matrix. Rigth: Visual representation of 300 **_ones_** in a model matrix with 28*28 columns and 300 lines&#34; width=&#34;864&#34; /&gt;
+&lt;p class=&#34;caption&#34;&gt;
+Figure 1: Left: a ggimage() of a &lt;strong&gt;&lt;em&gt;one&lt;/em&gt;&lt;/strong&gt; in a 28&lt;em&gt;28 matrix. Rigth: Visual representation of 300 &lt;strong&gt;&lt;em&gt;ones&lt;/em&gt;&lt;/strong&gt; in a model matrix with 28&lt;/em&gt;28 columns and 300 lines
+&lt;/p&gt;
+&lt;/div&gt;
+&lt;p&gt;&lt;br /&gt;&lt;/p&gt;
+&lt;/div&gt;
+&lt;div id=&#34;zeros&#34; class=&#34;section level3&#34;&gt;
+&lt;h3&gt;Zero’s&lt;/h3&gt;
+&lt;p&gt;The same but with a &lt;strong&gt;&lt;em&gt;zero&lt;/em&gt;&lt;/strong&gt;&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;id &amp;lt;- which(y_train==0)[1] 
+img &amp;lt;- x_train[id,]
+img &amp;lt;- t(matrix(img, nrow=28L, byrow=T))
+p0 &amp;lt;- ggimage(img)+theme(plot.margin = unit(c(0.5,1,0.5,0.5), &amp;quot;cm&amp;quot;))
+#matrix of 300 zeros
+id &amp;lt;- head(which(y_train== 0),300)
+img &amp;lt;- x_train[id,]
+p1 &amp;lt;- ggimage(img)
+grid.arrange(p0,p1,nrow=1,widths=c(2,4))&lt;/code&gt;&lt;/pre&gt;
+&lt;div class=&#34;figure&#34; style=&#34;text-align: center&#34;&gt;&lt;span id=&#34;fig:pcadigit0&#34;&gt;&lt;/span&gt;
+&lt;img src=&#34;/post/pca_umap/index_files/figure-html/pcadigit0-1.png&#34; alt=&#34;Left: a ggimage() of a **_zero_** in a 28*28 matrix. Rigth: Visual representation of 300 **_zeros_** in a model matrix&#34; width=&#34;864&#34; /&gt;
+&lt;p class=&#34;caption&#34;&gt;
+Figure 2: Left: a ggimage() of a &lt;strong&gt;&lt;em&gt;zero&lt;/em&gt;&lt;/strong&gt; in a 28*28 matrix. Rigth: Visual representation of 300 &lt;strong&gt;&lt;em&gt;zeros&lt;/em&gt;&lt;/strong&gt; in a model matrix
+&lt;/p&gt;
+&lt;/div&gt;
+&lt;p&gt;&lt;br /&gt;&lt;/p&gt;
+&lt;/div&gt;
+&lt;div id=&#34;both&#34; class=&#34;section level3&#34;&gt;
+&lt;h3&gt;Both&lt;/h3&gt;
+&lt;p&gt;A visual way to check correlation between different objects, is to overlap the columns, and see how many coincidences they have.
+Here we will overlap 300 &lt;strong&gt;ones&lt;/strong&gt; (in blue) and 300 &lt;strong&gt;zeros&lt;/strong&gt; (in red), with the overlaps in white.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;#image
+idones &amp;lt;- head(which(y_train == 1),300)
+img1 &amp;lt;- x_train[idones,]
+dim(img1) &amp;lt;- c(300,28,28)
+idzeros &amp;lt;- head(which(y_train == 0),300)
+img0 &amp;lt;- x_train[idzeros,]
+dim(img0) &amp;lt;- c(300,28,28)
+digitoverlap &amp;lt;- array(rep(0,28*28*3), c(28,28,3))
+for(i in 1:300){
+  for(j in 1:28){
+    for(k in 1:28){
+    if(img1[i,j,k]&amp;gt;0) digitoverlap[j,k,3] &amp;lt;- digitoverlap[j,k,3]+1
+    if(img0[i,j,k]&amp;gt;0) digitoverlap[j,k,1] &amp;lt;- digitoverlap[j,k,1]+1
+    if(img1[i,j,k]&amp;gt;0 &amp;amp; img0[i,j,k]&amp;gt;0) digitoverlap[j,k,2] &amp;lt;- digitoverlap[j,k,2]+1 #add white
+    }
+  }
+}
+p0 &amp;lt;- ggimage(digitoverlap)+theme(plot.margin = unit(c(0.4,1,0.4,0.4), &amp;quot;cm&amp;quot;))
+
+#model matrix
+img1 &amp;lt;- t(x_train[idones,])
+img0 &amp;lt;- t(x_train[idzeros,])
+matrixoverlap &amp;lt;- array(rep(NA,728*300*3), c( 300,728, 3))
+for(i in 1:728){
+  for(j in 1:300){
+    if(img1[i,j]==0 &amp;amp; img0[i,j]==0) matrixoverlap[j,i,] &amp;lt;- c(0,0,0)
+    if(img1[i,j]&amp;gt;0  &amp;amp; img0[i,j]==0) matrixoverlap[j,i,] &amp;lt;- c(0,0,1)
+    if(img1[i,j]==0 &amp;amp; img0[i,j]&amp;gt;0)  matrixoverlap[j,i,] &amp;lt;- c(1,0,0)
+    if(img1[i,j]&amp;gt;0  &amp;amp; img0[i,j]&amp;gt;0)  matrixoverlap[j,i,] &amp;lt;- c(1,1,1)
+    
+  }
+}
+p1 &amp;lt;- ggimage(matrixoverlap)
+
+grid.arrange(p0,p1,nrow=1,widths=c(2,4))&lt;/code&gt;&lt;/pre&gt;
+&lt;div class=&#34;figure&#34; style=&#34;text-align: center&#34;&gt;&lt;span id=&#34;fig:overlap1&#34;&gt;&lt;/span&gt;
+&lt;img src=&#34;/post/pca_umap/index_files/figure-html/overlap1-1.png&#34; alt=&#34;Left: Plot of 300 **__ones__** (blue) and **__zeros__** (red) overlaped (white for overlapet areas). Rigth: The same overlap, but in model matrix.&#34; width=&#34;864&#34; /&gt;
+&lt;p class=&#34;caption&#34;&gt;
+Figure 3: Left: Plot of 300 &lt;strong&gt;&lt;strong&gt;ones&lt;/strong&gt;&lt;/strong&gt; (blue) and &lt;strong&gt;&lt;strong&gt;zeros&lt;/strong&gt;&lt;/strong&gt; (red) overlaped (white for overlapet areas). Rigth: The same overlap, but in model matrix.
+&lt;/p&gt;
+&lt;/div&gt;
+&lt;p&gt;&lt;br /&gt;&lt;/p&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;div id=&#34;the-pca&#34; class=&#34;section level2&#34;&gt;
+&lt;h2&gt;The PCA&lt;/h2&gt;
+&lt;p&gt;I think is pretty intuitive that the shapes of &lt;strong&gt;1&lt;/strong&gt; and &lt;strong&gt;0&lt;/strong&gt; are the more uncorrelated ones, ergo they will be in oposites sides of the first component of the PCA:&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;pca.model &amp;lt;- prcomp(x_train) 
+
+pca.df &amp;lt;- data.frame(pca.model$x[,1:2])
+
+pca.df$y_train &amp;lt;- y_train
+centroid &amp;lt;- pca.df%&amp;gt;%group_by(y_train)%&amp;gt;%summarise(PC1=mean(PC1),PC2=mean(PC2))
+
+ggplot(pca.df)+geom_point(aes(PC1,PC2,color=factor(y_train)))+
+  geom_text(data=centroid,aes(PC1,PC2,label=y_train),size=5)+labs(color=&amp;#39;Digit&amp;#39;)&lt;/code&gt;&lt;/pre&gt;
+&lt;div class=&#34;figure&#34; style=&#34;text-align: center&#34;&gt;&lt;span id=&#34;fig:pca&#34;&gt;&lt;/span&gt;
+&lt;img src=&#34;/post/pca_umap/index_files/figure-html/pca-1.png&#34; alt=&#34;digit-MINST PCA of first 2 components&#34; width=&#34;576&#34; /&gt;
+&lt;p class=&#34;caption&#34;&gt;
+Figure 4: digit-MINST PCA of first 2 components
+&lt;/p&gt;
+&lt;/div&gt;
+&lt;p&gt;&lt;br /&gt;
+Remember that PCA keeps the relative distance between individuals, so obviously &lt;strong&gt;0&lt;/strong&gt; is far away from &lt;strong&gt;1&lt;/strong&gt;, and &lt;strong&gt;5&lt;/strong&gt; will be kept close to &lt;strong&gt;6&lt;/strong&gt;, &lt;strong&gt;4&lt;/strong&gt; close to &lt;strong&gt;9&lt;/strong&gt;, etc… But also those 4’s that are more look-alike a &lt;strong&gt;9&lt;/strong&gt;, will be more close to the &lt;strong&gt;9&lt;/strong&gt; centroid, and &lt;strong&gt;7&lt;/strong&gt;’s that are more similar to &lt;strong&gt;1&lt;/strong&gt; will be closer to the &lt;strong&gt;1&lt;/strong&gt; centroid…
+That is a lot of information, and requires a lot of axis to keep it, and a lot of granularity to display. Thus the graph looks “fuzzy”, and 2 components is really not enough to display this complexity.&lt;br /&gt;
+But it allow us to find the more &lt;strong&gt;1&lt;/strong&gt; of the &lt;strong&gt;8&lt;/strong&gt;`s, the more &lt;strong&gt;0&lt;/strong&gt; of the &lt;strong&gt;8&lt;/strong&gt;, and the more &lt;strong&gt;9&lt;/strong&gt; …. and with only the 2 first components.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;library(ggmap)
+library(gridExtra)
+
+pca.df$id &amp;lt;- 1:nrow(pca.df)
+# the more 1 of the 8&amp;#39;s
+id1 &amp;lt;- (pca.df%&amp;gt;%filter(y_train==8)%&amp;gt;%group_by()%&amp;gt;%filter(PC1==max(PC1)))$id
+img &amp;lt;- x_train[id1,]
+dim(img) &amp;lt;- c(28,28)
+p1 &amp;lt;- ggimage(img)+theme(plot.margin = unit(c(0,1,0,0.5), &amp;quot;cm&amp;quot;))
+# the more 0....
+id1 &amp;lt;- (pca.df%&amp;gt;%filter(y_train==8)%&amp;gt;%group_by()%&amp;gt;%filter(PC1==min(PC1)))$id
+img &amp;lt;- x_train[id1,]
+dim(img) &amp;lt;- c(28,28)
+p0 &amp;lt;- ggimage(img)+theme(plot.margin = unit(c(0,1,0,0.5), &amp;quot;cm&amp;quot;))
+# the more 9....
+id1 &amp;lt;- (pca.df%&amp;gt;%filter(y_train==8)%&amp;gt;%group_by()%&amp;gt;%filter(PC2==min(PC2)))$id
+img &amp;lt;- x_train[id1,]
+dim(img) &amp;lt;- c(28,28)
+p9 &amp;lt;- ggimage(img)+theme(plot.margin = unit(c(0,1,0,0.5), &amp;quot;cm&amp;quot;))
+
+grid.arrange(arrangeGrob(p1,top=&amp;quot;The more 1 of the 8&amp;#39;s&amp;quot;),
+             arrangeGrob(p0,top=&amp;quot;The more 0 of the 8&amp;#39;s&amp;quot;),
+             arrangeGrob(p9,top=&amp;quot;&amp;#39;The more 9 of the 8&amp;#39;&amp;quot;),nrow=1)&lt;/code&gt;&lt;/pre&gt;
+&lt;div class=&#34;figure&#34; style=&#34;text-align: center&#34;&gt;&lt;span id=&#34;fig:eith&#34;&gt;&lt;/span&gt;
+&lt;img src=&#34;/post/pca_umap/index_files/figure-html/eith-1.png&#34; alt=&#34;Some 8&#39;s&#34; width=&#34;864&#34; /&gt;
+&lt;p class=&#34;caption&#34;&gt;
+Figure 5: Some 8’s
+&lt;/p&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;div id=&#34;reverse-de-pca&#34; class=&#34;section level2&#34;&gt;
+&lt;h2&gt;Reverse de PCA&lt;/h2&gt;
+&lt;p&gt;Now i’m going to create 4 points, meant to be blueprints that maximaze each component:&lt;/p&gt;
+&lt;span class=&#34;math display&#34;&gt;\[\begin{bmatrix}
+PC1 &amp;amp; PC2 &amp;amp;\\ 
+ 2000 &amp;amp; 0 \\
+ -2000 &amp;amp; 0 \\
+ 0 &amp;amp; 2000 \\
+ 0 &amp;amp; -2000 \end{bmatrix}\]&lt;/span&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;blueprints &amp;lt;- data.frame(PC1=c(2000,-2000,0,0),PC2=c(0,0,2000,-2000))
+
+ggplot(pca.df)+geom_point(aes(PC1,PC2,color=factor(y_train)))+
+  labs(color=&amp;#39;Digit&amp;#39;)+
+  geom_point(data=blueprints,aes(PC1,PC2),color=&amp;#39;black&amp;#39;,size=3)&lt;/code&gt;&lt;/pre&gt;
+&lt;div class=&#34;figure&#34; style=&#34;text-align: center&#34;&gt;&lt;span id=&#34;fig:blueprints&#34;&gt;&lt;/span&gt;
+&lt;img src=&#34;/post/pca_umap/index_files/figure-html/blueprints-1.png&#34; alt=&#34;4 fake digits on the PCA plane&#34; width=&#34;576&#34; /&gt;
+&lt;p class=&#34;caption&#34;&gt;
+Figure 6: 4 fake digits on the PCA plane
+&lt;/p&gt;
+&lt;/div&gt;
+&lt;p&gt;&lt;br /&gt;&lt;/p&gt;
+&lt;p&gt;Let’s revers them and see how they look (remember that with ggimage(), white is 255 and black is 0, the opposite of image(), also there is a need of add a t() in image() )&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;library(ggmap)
+library(gridExtra)
+Xhat &amp;lt;- as.matrix(blueprints)%*%t(pca.model$rotation[,1:2])
+
+dim(Xhat) &amp;lt;- c(4,28,28)
+p1 &amp;lt;- ggimage(Xhat[1,,])+theme(plot.margin = unit(c(0,1,0,0.5), &amp;quot;cm&amp;quot;))
+p2 &amp;lt;- ggimage(Xhat[2,,])+theme(plot.margin = unit(c(0,1,0,0.5), &amp;quot;cm&amp;quot;))
+p3 &amp;lt;- ggimage(Xhat[3,,])+theme(plot.margin = unit(c(0,1,0,0.5), &amp;quot;cm&amp;quot;))
+p4 &amp;lt;- ggimage(Xhat[4,,])+theme(plot.margin = unit(c(0,1,0,0.5), &amp;quot;cm&amp;quot;))
+
+grid.arrange(arrangeGrob(p1,top=&amp;#39;a) PC1: +2000, PC2: 0&amp;#39;),
+             arrangeGrob(p2,top=&amp;#39;b) PC1: -2000, PC2: 0&amp;#39;),
+             arrangeGrob(p3,top=&amp;#39;c) PC1: 0, PC2: 2000&amp;#39;),
+             arrangeGrob(p4,top=&amp;#39;d) PC1: 0, PC2: -2000&amp;#39;),nrow=1)&lt;/code&gt;&lt;/pre&gt;
+&lt;div class=&#34;figure&#34; style=&#34;text-align: center&#34;&gt;&lt;span id=&#34;fig:reverse&#34;&gt;&lt;/span&gt;
+&lt;img src=&#34;/post/pca_umap/index_files/figure-html/reverse-1.png&#34; alt=&#34;the &#39;real&#39; 4 fake digits&#34; width=&#34;864&#34; /&gt;
+&lt;p class=&#34;caption&#34;&gt;
+Figure 7: the ‘real’ 4 fake digits
+&lt;/p&gt;
+&lt;/div&gt;
+From left to rigth:&lt;br /&gt;
+
+&lt;ol type=&#34;a&#34;&gt;
+&lt;li&gt;
+i’m a 1, and definetly not a 0
+&lt;/li&gt;
+&lt;li&gt;
+i’m a 0, and definetly not a 1
+&lt;/li&gt;
+&lt;li&gt;
+i’m definetly not a 9 and i have some width in the bottom half.
+&lt;/li&gt;
+&lt;li&gt;
+i look like a 9, and i’m thin in the bottom half.
+&lt;/li&gt;
+&lt;/ol&gt;
+&lt;p&gt;&lt;br /&gt;&lt;/p&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;div id=&#34;umap&#34; class=&#34;section level1&#34;&gt;
+&lt;h1&gt;UMAP &lt;img src=&#34;/pca_umap/index_files/overlap1-1.png&#34; /&gt;&lt;/h1&gt;
+&lt;p&gt;Umap in the other hand don’t keep all the information. In UMAP there are “only” two distance: close-far, or you are a 7, or you are not a 7, there is no such things as 7 is similar to a 1 but very different from an 8.
+As UMAP keeps less information, it will need less axis to plot them. But then you can not interpret the relative positions of the groups, nor the position of individual (only if they are in a group or not).
+(actually Umap does have this distance information between groups, but it gives to it so few weigth in the computation, that you can not rely on results)
+here the UMAP:&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;library(umap)
+umap.model &amp;lt;- umap(x_train,verbose=T,n_components=2,n_epochs=1000)
+umap.df &amp;lt;- as.data.frame(umap.model$layout)
+umap.df$y_train &amp;lt;- y_train
+
+centroid &amp;lt;- umap.df%&amp;gt;%group_by(y_train)%&amp;gt;%summarise(V1=mean(V1),V2=mean(V2))
+
+ggplot(umap.df,aes(V1,V2))+geom_point(aes(color=factor(y_train)))+
+  geom_text(data=centroid,aes(V1,V2,label=y_train),size=5)+labs(color=&amp;#39;Digit&amp;#39;)&lt;/code&gt;&lt;/pre&gt;
+&lt;div class=&#34;figure&#34; style=&#34;text-align: center&#34;&gt;&lt;span id=&#34;fig:UMAP&#34;&gt;&lt;/span&gt;
+&lt;img src=&#34;/post/pca_umap/index_files/figure-html/UMAP-1.png&#34; alt=&#34;UMAP plot of digits-MNIST&#34; width=&#34;576&#34; /&gt;
+&lt;p class=&#34;caption&#34;&gt;
+Figure 8: UMAP plot of digits-MNIST
+&lt;/p&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+</description>
+    </item>
     
     <item>
       <title>Convolution</title>
