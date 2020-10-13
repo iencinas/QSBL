@@ -59,10 +59,11 @@ y_train <- y_train[id]
 
 # PCA
 
-If I have to explain in a high level perspective, super-aprox., what a PCA does: It creates 2 spaces, that correspond to distance between lines of a matrix (points or observations) and other that correspond to the correlation between columns of the same matrix (variables). One is the dual space of the other, and math-magic you can plot both in the same graph.
-The trick is that PCA maximize the information of the matrix in the first component (base of the dual space). What information?: distance between point.s
-, and other ) s check the correlation between columns of a matrix. Just not any matrix, but a _model_ _matrix_ where each row is a individual object and each columns is a variable.
-So a matrix that defines a image, is not suited for PCA (i really hope this is obviously). Let's see this with an example:  
+If I have to explain in a high level perspective, super-approximated, what a PCA does: It creates 2 spaces, that correspond to distance between lines of a matrix (points or observations) and other that correspond to the correlation between columns of the same matrix (variables). One is the dual space of the other, and math-magic you can plot both in the same graph.
+An important fact of PCA is that it keeps ALL information of the matrix, so if you take all components, you can reproduce the full matrix.
+What information?: distance between points and correlation between columns.
+So you can not plug any matrix in a PCA, but a _model_ _matrix_ where each row is a individual object and each columns is a variable.
+So a matrix that defines a image, is not suited for PCA. Let's see this with an example:  
 
 This is a matrix with a "one" ready to be ploted with ggimage():
 
@@ -81,13 +82,13 @@ X1 & ...  & X6 & X7 & X8 & X9 & X10 & X11 & X12 & ... & X36\\
 
 <br />
 
-## More n Image Matrix vrs Model Matrix
+## Image Matrix vrs Model Matrix
 
 ### One's 
 
 What we see: a image matrix of a **_one_**, versus what PCA "see" (a matrix of 300 ones)
 
-```{r pcadigit1, cache=T,fig.width=9,fig.height=3, fig.cap="Left: a ggimage() of a **_one_** in a 28*28 matrix. Rigth: Visual representation of 300 **_ones_** in a model matrix"}
+```{r pcadigit1, cache=T,fig.width=9,fig.height=3, fig.cap="Left: a ggimage() of a **_one_** in a 28*28 matrix. Rigth: Visual representation of 300 **_ones_** in a model matrix with 28*28 columns and 300 lines"}
 
 library(ggmap)
 library(gridExtra)
@@ -111,7 +112,7 @@ grid.arrange(p0,p1,nrow=1,widths=c(2,4))
 
 The same but with a **_zero_**
 
-```{r pcadigit0, cache=T,fig.width=9,fig.height=3, fig.cap="Left: a ggimage() of a **_zero_** in a 28*28 matrix. Rigth: Visual representation of300 **_zeros_** in a model matrix"}
+```{r pcadigit0, cache=T,fig.width=9,fig.height=3, fig.cap="Left: a ggimage() of a **_zero_** in a 28*28 matrix. Rigth: Visual representation of 300 **_zeros_** in a model matrix"}
 
 id <- which(y_train==0)[1] 
 img <- x_train[id,]
@@ -208,12 +209,12 @@ ggplot(pca.df)+geom_point(aes(PC1,PC2,color=factor(y_train)))+
 
 ```
 <br /> 
-PCA keeps the relative distance between individuals, so obviously **0** is far away from **1**, and **5** will be kept close to **6**, **4** close to **9**, etc... But also those 4's that are more look-alike a **9**, will be more close to the **9** centroid, and **7**'s that are more similar to **1** will be closer to the **1** centroid...
+Remember that PCA keeps the relative distance between individuals, so obviously **0** is far away from **1**, and **5** will be kept close to **6**, **4** close to **9**, etc... But also those 4's that are more look-alike a **9**, will be more close to the **9** centroid, and **7**'s that are more similar to **1** will be closer to the **1** centroid...
 That is a lot of information, and requires a lot of axis to keep it, and a lot of granularity to display. Thus the graph looks "fuzzy", and 2 components is really not enough to display this complexity.  
-But it allow us to find the more **1** of the **8**`s, the more **0** of the **8**, and the more **9** .... eevn this only the 2 first components.
+But it allow us to find the more **1** of the **8**`s, the more **0** of the **8**, and the more **9** .... and with only the 2 first components.
 
 
-```{r eith, cache=F,fig.width=9,fig.height=3, fig.cap = "Some 8's"}
+```{r eith, cache=T,fig.width=9,fig.height=3, fig.cap = "Some 8's"}
 library(ggmap)
 library(gridExtra)
 
@@ -301,8 +302,9 @@ From left to rigth:
 
 # UMAP  
 
-Umap in the other hand don't keep all this information, distance if objects between groups. In UMAP there are "only" two distance: close-far, or you are a 7, or you are a 1, there is no such things as 7 closes to ones (actually there is, but UMAP give to this information less importance and sacrifice it a lot onwars the close-far information).
-As UMAP keeps less information, it will need less axis to plot them.
+Umap in the other hand don't keep all the information. In UMAP there are "only" two distance: close-far, or you are a 7, or you are not a 7, there is no such things as 7 is similar to a 1 but very different from an 8.
+As UMAP keeps less information, it will need less axis to plot them. But then you can not interpret the relative positions of the groups, nor the position of individual (only if they are in a group or not).
+(actually Umap does have this distance information between groups, but it gives to it so few weigth in the computation, that you can not rely on results)
 here the UMAP:
 
 ```{r UMAP, cache=T, fig.cap = "UMAP plot of digits-MNIST"}
@@ -311,7 +313,10 @@ umap.model <- umap(x_train,verbose=T,n_components=2,n_epochs=1000)
 umap.df <- as.data.frame(umap.model$layout)
 umap.df$y_train <- y_train
 
-ggplot(umap.df,aes(V1,V2))+geom_point(aes(color=factor(y_train)))+labs(color='Digit')
+centroid <- umap.df%>%group_by(y_train)%>%summarise(V1=mean(V1),V2=mean(V2))
+
+ggplot(umap.df,aes(V1,V2))+geom_point(aes(color=factor(y_train)))+
+  geom_text(data=centroid,aes(V1,V2,label=y_train),size=5)+labs(color='Digit')
 
 ```
 
