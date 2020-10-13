@@ -1,14 +1,14 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes" ?>
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
-    <title>Academic</title>
+    <title>QuiScribitBisLegit</title>
     <link>/</link>
       <atom:link href="/index.xml" rel="self" type="application/rss+xml" />
-    <description>Academic</description>
+    <description>QuiScribitBisLegit</description>
     <generator>Source Themes Academic (https://sourcethemes.com/academic/)</generator><language>en-us</language><lastBuildDate>Sat, 01 Jun 2030 13:00:00 +0000</lastBuildDate>
     <image>
       <url>/img/icon-192.png</url>
-      <title>Academic</title>
+      <title>QuiScribitBisLegit</title>
       <link>/</link>
     </image>
     
@@ -75,6 +75,79 @@
     </item>
     
     <item>
+      <title>SVM PCA &amp; UMAP</title>
+      <link>/post/pca_umap/</link>
+      <pubDate>Sun, 05 Jan 2020 00:00:00 +0000</pubDate>
+      <guid>/post/pca_umap/</guid>
+      <description>
+
+
+&lt;p&gt;PCA is not meant for what i’m going to do here, i think PCA is an exploratory tool (a very good one). But i’m going to try &lt;a href=&#34;https://colah.github.io/posts/2014-10-Visualizing-MNIST/&#34;&gt;this&lt;/a&gt;.
+I’m not going to add MSD (even i would love to), because is not parctical (&lt;a href=&#34;https://umap-learn.readthedocs.io/en/latest/benchmarking.html&#34;&gt;too sloow&lt;/a&gt;)
+Also at the end i will use some SVM.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;library(keras)  #nowt gona use keras, is just to get the minst data set
+x_train &amp;lt;- dataset_mnist()$train$x
+y_train &amp;lt;- dataset_mnist()$train$y
+x_test &amp;lt;- dataset_mnist()$test$x
+y_test &amp;lt;- dataset_mnist()$test$y&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;##PCA&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;system.time({
+  pca.res &amp;lt;- prcomp(x_train) 
+})&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;   user  system elapsed 
+   1.45    0.30    1.78 &lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;pca.test.1 &amp;lt;- prcomp(pca.test,
+center = TRUE,
+scale. = TRUE)
+y_train &amp;lt;- mnist&lt;span class=&#34;math inline&#34;&gt;\(train\)&lt;/span&gt;y
+names(pca.test.1)
+plot(pca.test.1, type = “l”)&lt;/p&gt;
+&lt;p&gt;fviz_eig(pca.test.1,ncp = 40)
+v &amp;lt;- pca.test.1$rotation
+v2 &amp;lt;- data.frame(v)
+ggplot(v2)+
+geom_segment(aes(0,0,xend=PC1,yend=PC2), arrow = arrow(length = unit(0.5, “cm”)))+
+geom_text(position =position_jitter(w = 0.1, h = 0.1),
+color=‘blue’,
+aes(PC1,PC2,label=rownames(v2)))
+ggplot(v2)+
+geom_segment(aes(0,0,xend=PC3,yend=PC4), arrow = arrow(length = unit(0.5, “cm”)))+
+geom_text(position =position_jitter(w = 0.1, h = 0.1),
+color=‘blue’,
+aes(PC3,PC4,label=rownames(v2)))&lt;/p&gt;
+&lt;p&gt;ggplot(v2)+
+geom_segment(aes(0,0,xend=PC4,yend=PC5), arrow = arrow(length = unit(0.5, “cm”)))+
+geom_text(position =position_jitter(w = 0.1, h = 0.1),
+color=‘blue’,
+aes(PC4,PC5,label=rownames(v2)))&lt;/p&gt;
+&lt;p&gt;library(factoextra)
+help(“fviz_pca_ind”)
+fviz_pca_ind(pca.test.1,geom=‘point’,axes=c(1,2),
+col.ind = factor(y_train), # Color by the quality of representation
+repel = TRUE # Avoid text overlapping
+)&lt;/p&gt;
+&lt;p&gt;fviz_pca_ind(pca.test.1,geom=‘point’,axes=c(3,4),
+col.ind = factor(y_train), # Color by the quality of representation
+repel = TRUE # Avoid text overlapping
+)&lt;/p&gt;
+&lt;p&gt;fviz_pca_biplot(pca.test.1,geom=‘point’,axes=c(1,2),
+col.ind = factor(tags), # Color by the quality of representation
+col.var = “black”, fill.var = “white”,
+repel = TRUE # Avoid text overlapping
+)&lt;/p&gt;
+&lt;p&gt;fviz_pca_biplot(pca.test.1,geom=‘point’,axes=c(2,3),
+col.ind = factor(tags), # Color by the quality of representation
+col.var = “black”, fill.var = “white”,
+repel = TRUE # Avoid text overlapping
+)&lt;/p&gt;
+&lt;p&gt;fviz_pca_ind(pca.test.1,geom=‘point’,axes=c(2,3),
+col.ind = factor(tags), # Color by the quality of representation
+repel = TRUE # Avoid text overlapping
+)&lt;/p&gt;
+</description>
+    </item>
+    
+    <item>
       <title>Convolution</title>
       <link>/post/convolution/</link>
       <pubDate>Fri, 03 Jan 2020 00:00:00 +0000</pubDate>
@@ -101,7 +174,22 @@ z &amp;lt;- seq(0,2,0.01)
 conv &amp;lt;- data.frame(z=z,convolution=df.z(z))
 
 ggplot(conv)+geom_line(aes(z,convolution))+theme_classic()&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;&lt;img src=&#34;/post/Convolution/index_files/figure-html/conv%20-1.png&#34; width=&#34;75%&#34; style=&#34;display: block; margin: auto;&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;/post/Convolution/index_files/figure-html/conv%20-1.png&#34; width=&#34;75%&#34; style=&#34;display: block; margin: auto;&#34; /&gt;
+One last convolution (with numerical error i would say).&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;f.x &amp;lt;- function(y) dnorm(y,10,1)   
+f.y &amp;lt;- function(x) dexp(x,0.1)     
+
+f.z &amp;lt;- function(z) integrate(function(x,z) f.y(z-x)*f.x(x),-Inf,Inf,z)$value
+df.z &amp;lt;- Vectorize(f.z)
+
+z &amp;lt;- seq(0,50,0.01)
+Conv &amp;lt;- data.frame(z=z,Convolution=df.z(z),fx=f.x(z),fy=f.y(z))
+
+ggplot(Conv)+geom_line(aes(z,Convolution,color=&amp;#39;Convolution&amp;#39;))+
+  geom_line(aes(z,fx,color=&amp;#39;normal distribution&amp;#39;))+
+  geom_line(aes(z,fy,color=&amp;#39;exponential&amp;#39;))+theme_classic()+
+  theme(legend.position=c(0.55, 0.55))+labs(color=&amp;#39;&amp;#39;)&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;/post/Convolution/index_files/figure-html/conv2%20-1.png&#34; width=&#34;75%&#34; style=&#34;display: block; margin: auto;&#34; /&gt;&lt;/p&gt;
 &lt;p&gt;Code from &lt;a href=&#34;https://stackoverflow.com/questions/23569133/adding-two-random-variables-via-convolution-in-r&#34;&gt;here&lt;/a&gt;, and a good explanation &lt;a href=&#34;http://colah.github.io/posts/2014-07-Understanding-Convolutions/#fn2&#34;&gt;here&lt;/a&gt;&lt;/p&gt;
 </description>
     </item>

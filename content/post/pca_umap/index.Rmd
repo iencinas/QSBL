@@ -1,0 +1,317 @@
+---
+title: "PCA & UMAP"
+authors: 
+- admin
+date: "2019-12-28"
+output:   
+  bookdown::html_document2:
+    code_folding: hide
+    number_sections: false
+summary: Use and compare PCA and UMAP with the MNIST digit dataset.
+categories: ["R"]
+tags: ["R", "plot", "pca" ,"umap"]
+featured: false
+image:
+  caption: ""
+  focal_point: ""
+  preview_only: true
+---
+
+
+```{r setup, include=FALSE}
+library(knitr)
+library(htmltools)
+library(tidyverse)
+opts_chunk$set(echo = TRUE)
+opts_chunk$set(tidy=FALSE, warning=FALSE, message=FALSE, cache=T, 
+               comment=NA, verbose=TRUE, fig.width=6, fig.height=4,
+               fig.align='center'
+               )
+
+library(ggplot2) 
+theme_set(theme_bw(base_size=12))
+theme_set(theme_classic(base_size=12))
+```
+
+I'm going to try something like [this](https://colah.github.io/posts/2014-10-Visualizing-MNIST/).
+
+I will use a sample of the MNIST digit dataset that is in the keras library (i will not use keras here).
+ 
+```{r load, cache=T, echo = TRUE}
+#nowt gona use keras, is just to get the minst data set
+library(keras) 
+mnist <- dataset_mnist()
+x_train <- mnist$train$x
+y_train <- mnist$train$y
+x_test <- mnist$test$x
+y_test <- mnist$test$y
+
+dim(x_train) <- c(nrow(x_train),784)
+dim(x_test)  <- c(nrow(x_test),784)
+
+#and i'm going to use a small sample to speed up things
+set.seed(123)
+id <- sample(1:nrow(x_train),size = 12000,replace = F)
+x_train <- x_train[id,]
+y_train <- y_train[id]
+
+```
+
+# PCA
+
+If I have to explain in a high level perspective, super-aprox., what a PCA does: It creates 2 spaces, that correspond to distance between lines of a matrix (points or observations) and other that correspond to the correlation between columns of the same matrix (variables). One is the dual space of the other, and math-magic you can plot both in the same graph.
+The trick is that PCA maximize the information of the matrix in the first component (base of the dual space). What information?: distance between point.s
+, and other ) s check the correlation between columns of a matrix. Just not any matrix, but a _model_ _matrix_ where each row is a individual object and each columns is a variable.
+So a matrix that defines a image, is not suited for PCA (i really hope this is obviously). Let's see this with an example:  
+
+This is a matrix with a "one" ready to be ploted with ggimage():
+
+\begin{bmatrix}
+0 & 0 & 0 & 0 & 0 & 0\\ 
+0 & 0 & 1 & 1 & 0 & 0\\ 
+0 & 0 & 1 & 1 & 0 & 0\\ 
+0 & 0 & 1 & 1 & 0 & 0\\ 
+0 & 0 & 1 & 1 & 0 & 0\\ 
+0 & 0 & 0 & 0 & 0 & 0
+\end{bmatrix}  
+And this is the same data, but as a single row of a _model matrix_ ready to be fed into a PCA: 
+\begin{bmatrix}
+X1 & ...  & X6 & X7 & X8 & X9 & X10 & X11 & X12 & ... & X36\\ 
+ 0& ... & 0 & 0 & 0 & 1 & 1 & 0 & 0 & ... & 0 &\end{bmatrix}
+
+<br />
+
+## More n Image Matrix vrs Model Matrix
+
+### One's 
+
+What we see: a image matrix of a **_one_**, versus what PCA "see" (a matrix of 300 ones)
+
+```{r pcadigit1, cache=T,fig.width=9,fig.height=3, fig.cap="Left: a ggimage() of a **_one_** in a 28*28 matrix. Rigth: Visual representation of 300 **_ones_** in a model matrix"}
+
+library(ggmap)
+library(gridExtra)
+#image of one "one"
+id <- which(y_train==1)[2] #pick the second one, because the first is "ugly"
+img <- x_train[id,]
+img <- t(matrix(img, nrow=28L, byrow=T))
+p0 <- ggimage(img)+theme(plot.margin = unit(c(0.4,1,0.4,0.4), "cm"))
+#matrix of 300 ones
+id <- head(which(y_train== 1),300)
+img <- x_train[id,]
+p1 <- ggimage(img)
+
+grid.arrange(p0,p1,nrow=1,widths=c(2,4))
+
+
+```
+<br />
+
+### Zero's  
+
+The same but with a **_zero_**
+
+```{r pcadigit0, cache=T,fig.width=9,fig.height=3, fig.cap="Left: a ggimage() of a **_zero_** in a 28*28 matrix. Rigth: Visual representation of300 **_zeros_** in a model matrix"}
+
+id <- which(y_train==0)[1] 
+img <- x_train[id,]
+img <- t(matrix(img, nrow=28L, byrow=T))
+p0 <- ggimage(img)+theme(plot.margin = unit(c(0.5,1,0.5,0.5), "cm"))
+#matrix of 300 zeros
+id <- head(which(y_train== 0),300)
+img <- x_train[id,]
+p1 <- ggimage(img)
+grid.arrange(p0,p1,nrow=1,widths=c(2,4))
+
+
+```
+
+<!-- And for completiness, the same with a **__seven__** -->
+
+<!-- ```{r pcadigit7, cache=T,fig.width=9,fig.height=3, fig.cap="Left plot is a single **_seven_** in a 28*28 matrix ready for ggimage(). Rigth plot: 300 **_sevens_** in a model matrix"} -->
+<!-- #at this point i could have created a functions, but i'm a "copy/paste" guy. -->
+<!-- id <- which(y_train==7)[1]  -->
+<!-- img <- x_train[id,] -->
+<!-- img <- t(matrix(img, nrow=28L, byrow=T)) -->
+<!-- p0 <- ggimage(img)+theme(plot.margin = unit(c(0.5,1,0.5,0.5), "cm")) -->
+<!-- #matrix of 300 sevens -->
+<!-- id <- head(which(y_train== 7),300) -->
+<!-- img <- x_train[id,] -->
+<!-- p1 <- ggimage(img) -->
+<!-- grid.arrange(p0,p1,nrow=1,widths=c(2,4)) -->
+
+
+<!-- ``` -->
+
+<br />
+
+### Both 
+
+A visual way to check correlation between different objects, is to overlap the columns, and see how many coincidences they have.
+Here we will overlap 300 **ones** (in blue) and 300 **zeros** (in red), with the overlaps in white.
+
+```{r overlap1, cache=T,fig.width=9,fig.height=3, fig.cap="Left: Plot of 300 **__ones__** (blue) and **__zeros__** (red) overlaped (white for overlapet areas). Rigth: The same overlap, but in model matrix."}
+
+#image
+idones <- head(which(y_train == 1),300)
+img1 <- x_train[idones,]
+dim(img1) <- c(300,28,28)
+idzeros <- head(which(y_train == 0),300)
+img0 <- x_train[idzeros,]
+dim(img0) <- c(300,28,28)
+digitoverlap <- array(rep(0,28*28*3), c(28,28,3))
+for(i in 1:300){
+  for(j in 1:28){
+    for(k in 1:28){
+    if(img1[i,j,k]>0) digitoverlap[j,k,3] <- digitoverlap[j,k,3]+1
+    if(img0[i,j,k]>0) digitoverlap[j,k,1] <- digitoverlap[j,k,1]+1
+    if(img1[i,j,k]>0 & img0[i,j,k]>0) digitoverlap[j,k,2] <- digitoverlap[j,k,2]+1 #add white
+    }
+  }
+}
+p0 <- ggimage(digitoverlap)+theme(plot.margin = unit(c(0.4,1,0.4,0.4), "cm"))
+
+#model matrix
+img1 <- t(x_train[idones,])
+img0 <- t(x_train[idzeros,])
+matrixoverlap <- array(rep(NA,728*300*3), c( 300,728, 3))
+for(i in 1:728){
+  for(j in 1:300){
+    if(img1[i,j]==0 & img0[i,j]==0) matrixoverlap[j,i,] <- c(0,0,0)
+    if(img1[i,j]>0  & img0[i,j]==0) matrixoverlap[j,i,] <- c(0,0,1)
+    if(img1[i,j]==0 & img0[i,j]>0)  matrixoverlap[j,i,] <- c(1,0,0)
+    if(img1[i,j]>0  & img0[i,j]>0)  matrixoverlap[j,i,] <- c(1,1,1)
+    
+  }
+}
+p1 <- ggimage(matrixoverlap)
+
+grid.arrange(p0,p1,nrow=1,widths=c(2,4))
+```
+
+<br /> 
+
+## The PCA 
+
+I think is pretty intuitive that the shapes of  **1** and **0** are the more uncorrelated ones, ergo they will be in oposites sides of the first component of the PCA:
+
+```{r pca, cache=T, fig.cap = "digit-MINST PCA of first 2 components"}
+pca.model <- prcomp(x_train) 
+
+pca.df <- data.frame(pca.model$x[,1:2])
+
+pca.df$y_train <- y_train
+centroid <- pca.df%>%group_by(y_train)%>%summarise(PC1=mean(PC1),PC2=mean(PC2))
+
+ggplot(pca.df)+geom_point(aes(PC1,PC2,color=factor(y_train)))+
+  geom_text(data=centroid,aes(PC1,PC2,label=y_train),size=5)+labs(color='Digit')
+
+```
+<br /> 
+PCA keeps the relative distance between individuals, so obviously **0** is far away from **1**, and **5** will be kept close to **6**, **4** close to **9**, etc... But also those 4's that are more look-alike a **9**, will be more close to the **9** centroid, and **7**'s that are more similar to **1** will be closer to the **1** centroid...
+That is a lot of information, and requires a lot of axis to keep it, and a lot of granularity to display. Thus the graph looks "fuzzy", and 2 components is really not enough to display this complexity.  
+But it allow us to find the more **1** of the **8**`s, the more **0** of the **8**, and the more **9** .... eevn this only the 2 first components.
+
+
+```{r eith, cache=F,fig.width=9,fig.height=3, fig.cap = "Some 8's"}
+library(ggmap)
+library(gridExtra)
+
+pca.df$id <- 1:nrow(pca.df)
+# the more 1 of the 8's
+id1 <- (pca.df%>%filter(y_train==8)%>%group_by()%>%filter(PC1==max(PC1)))$id
+img <- x_train[id1,]
+dim(img) <- c(28,28)
+p1 <- ggimage(img)+theme(plot.margin = unit(c(0,1,0,0.5), "cm"))
+# the more 0....
+id1 <- (pca.df%>%filter(y_train==8)%>%group_by()%>%filter(PC1==min(PC1)))$id
+img <- x_train[id1,]
+dim(img) <- c(28,28)
+p0 <- ggimage(img)+theme(plot.margin = unit(c(0,1,0,0.5), "cm"))
+# the more 9....
+id1 <- (pca.df%>%filter(y_train==8)%>%group_by()%>%filter(PC2==min(PC2)))$id
+img <- x_train[id1,]
+dim(img) <- c(28,28)
+p9 <- ggimage(img)+theme(plot.margin = unit(c(0,1,0,0.5), "cm"))
+
+grid.arrange(arrangeGrob(p1,top="The more 1 of the 8's"),
+             arrangeGrob(p0,top="The more 0 of the 8's"),
+             arrangeGrob(p9,top="'The more 9 of the 8'"),nrow=1)
+
+```
+
+## Reverse de PCA 
+
+Now i'm going to create 4 points, meant to be blueprints that maximaze each component:
+
+\begin{bmatrix}
+PC1 & PC2 &\\ 
+ 2000 & 0 \\
+ -2000 & 0 \\
+ 0 & 2000 \\
+ 0 & -2000 \end{bmatrix} 
+
+ 
+```{r blueprints, cache=T, fig.cap = "4 fake digits on the PCA plane"}
+
+blueprints <- data.frame(PC1=c(2000,-2000,0,0),PC2=c(0,0,2000,-2000))
+
+ggplot(pca.df)+geom_point(aes(PC1,PC2,color=factor(y_train)))+
+  labs(color='Digit')+
+  geom_point(data=blueprints,aes(PC1,PC2),color='black',size=3)
+
+```
+
+<br />  
+
+Let's revers them and see how they look (remember that with ggimage(), white is 255 and black is 0, the opposite of image(), also there is a need of add a t() in image() )
+
+
+```{r reverse, cache=T,fig.width=9,fig.height=2, fig.cap = "the 'real' 4 fake digits"}
+
+library(ggmap)
+library(gridExtra)
+Xhat <- as.matrix(blueprints)%*%t(pca.model$rotation[,1:2])
+
+dim(Xhat) <- c(4,28,28)
+p1 <- ggimage(Xhat[1,,])+theme(plot.margin = unit(c(0,1,0,0.5), "cm"))
+p2 <- ggimage(Xhat[2,,])+theme(plot.margin = unit(c(0,1,0,0.5), "cm"))
+p3 <- ggimage(Xhat[3,,])+theme(plot.margin = unit(c(0,1,0,0.5), "cm"))
+p4 <- ggimage(Xhat[4,,])+theme(plot.margin = unit(c(0,1,0,0.5), "cm"))
+
+grid.arrange(arrangeGrob(p1,top='a) PC1: +2000, PC2: 0'),
+             arrangeGrob(p2,top='b) PC1: -2000, PC2: 0'),
+             arrangeGrob(p3,top='c) PC1: 0, PC2: 2000'),
+             arrangeGrob(p4,top='d) PC1: 0, PC2: -2000'),nrow=1)
+
+```
+
+
+From left to rigth:  
+<ol type="a">
+  <li>i'm a 1, and definetly not a 0  </li>
+  <li>i'm a 0, and definetly not a 1</li>
+  <li>i'm definetly not a 9 and i have some width in the bottom half.  </li>
+  <li>i look like a 9, and i'm thin in the bottom half.  </li>
+</ol>
+
+
+
+<br />
+
+# UMAP  
+
+Umap in the other hand don't keep all this information, distance if objects between groups. In UMAP there are "only" two distance: close-far, or you are a 7, or you are a 1, there is no such things as 7 closes to ones (actually there is, but UMAP give to this information less importance and sacrifice it a lot onwars the close-far information).
+As UMAP keeps less information, it will need less axis to plot them.
+here the UMAP:
+
+```{r UMAP, cache=T, fig.cap = "UMAP plot of digits-MNIST"}
+library(umap)
+umap.model <- umap(x_train,verbose=T,n_components=2,n_epochs=1000)
+umap.df <- as.data.frame(umap.model$layout)
+umap.df$y_train <- y_train
+
+ggplot(umap.df,aes(V1,V2))+geom_point(aes(color=factor(y_train)))+labs(color='Digit')
+
+```
+

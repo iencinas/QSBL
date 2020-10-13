@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes" ?>
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
-    <title>Convolution | Academic</title>
+    <title>Convolution | QuiScribitBisLegit</title>
     <link>/tags/convolution/</link>
       <atom:link href="/tags/convolution/index.xml" rel="self" type="application/rss+xml" />
     <description>Convolution</description>
@@ -39,7 +39,22 @@ z &amp;lt;- seq(0,2,0.01)
 conv &amp;lt;- data.frame(z=z,convolution=df.z(z))
 
 ggplot(conv)+geom_line(aes(z,convolution))+theme_classic()&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;&lt;img src=&#34;/post/Convolution/index_files/figure-html/conv%20-1.png&#34; width=&#34;75%&#34; style=&#34;display: block; margin: auto;&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;/post/Convolution/index_files/figure-html/conv%20-1.png&#34; width=&#34;75%&#34; style=&#34;display: block; margin: auto;&#34; /&gt;
+One last convolution (with numerical error i would say).&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;f.x &amp;lt;- function(y) dnorm(y,10,1)   
+f.y &amp;lt;- function(x) dexp(x,0.1)     
+
+f.z &amp;lt;- function(z) integrate(function(x,z) f.y(z-x)*f.x(x),-Inf,Inf,z)$value
+df.z &amp;lt;- Vectorize(f.z)
+
+z &amp;lt;- seq(0,50,0.01)
+Conv &amp;lt;- data.frame(z=z,Convolution=df.z(z),fx=f.x(z),fy=f.y(z))
+
+ggplot(Conv)+geom_line(aes(z,Convolution,color=&amp;#39;Convolution&amp;#39;))+
+  geom_line(aes(z,fx,color=&amp;#39;normal distribution&amp;#39;))+
+  geom_line(aes(z,fy,color=&amp;#39;exponential&amp;#39;))+theme_classic()+
+  theme(legend.position=c(0.55, 0.55))+labs(color=&amp;#39;&amp;#39;)&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;/post/Convolution/index_files/figure-html/conv2%20-1.png&#34; width=&#34;75%&#34; style=&#34;display: block; margin: auto;&#34; /&gt;&lt;/p&gt;
 &lt;p&gt;Code from &lt;a href=&#34;https://stackoverflow.com/questions/23569133/adding-two-random-variables-via-convolution-in-r&#34;&gt;here&lt;/a&gt;, and a good explanation &lt;a href=&#34;http://colah.github.io/posts/2014-07-Understanding-Convolutions/#fn2&#34;&gt;here&lt;/a&gt;&lt;/p&gt;
 </description>
     </item>

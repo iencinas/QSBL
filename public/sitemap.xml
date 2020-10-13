@@ -18,18 +18,28 @@
   </url>
   
   <url>
-    <loc>/</loc>
+    <loc>/talk/example/</loc>
     <lastmod>2030-06-01T13:00:00+00:00</lastmod>
   </url>
   
   <url>
-    <loc>/talk/example/</loc>
+    <loc>/</loc>
     <lastmod>2030-06-01T13:00:00+00:00</lastmod>
   </url>
   
   <url>
     <loc>/talk/</loc>
     <lastmod>2030-06-01T13:00:00+00:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>/post/</loc>
+    <lastmod>2020-01-05T00:00:00+00:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>/post/pca_umap/</loc>
+    <lastmod>2020-01-05T00:00:00+00:00</lastmod>
   </url>
   
   <url>
@@ -58,17 +68,12 @@
   </url>
   
   <url>
-    <loc>/post/</loc>
+    <loc>/categories/r/</loc>
     <lastmod>2020-01-03T00:00:00+00:00</lastmod>
   </url>
   
   <url>
     <loc>/tags/r/</loc>
-    <lastmod>2020-01-03T00:00:00+00:00</lastmod>
-  </url>
-  
-  <url>
-    <loc>/categories/r/</loc>
     <lastmod>2020-01-03T00:00:00+00:00</lastmod>
   </url>
   
