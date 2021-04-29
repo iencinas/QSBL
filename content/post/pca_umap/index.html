@@ -77,9 +77,9 @@ p1 &lt;- ggimage(img)
 
 grid.arrange(p0,p1,nrow=1,widths=c(2,4))</code></pre>
 <div class="figure" style="text-align: center"><span id="fig:pcadigit1"></span>
-<img src="/post/pca_umap/index_files/figure-html/pcadigit1-1.png" alt="Left: a ggimage() of a **_one_** in a 28*28 matrix. Rigth: Visual representation of 300 **_ones_** in a model matrix with 28*28 columns and 300 lines" width="864" />
+<img src="index_files/figure-html/pcadigit1-1.png" alt="Left: a ggimage() of a **_one_** in a 28x28 matrix. Rigth: Visual representation of 300 **_ones_** in a model matrix with 28x28 columns and 300 lines" width="864" />
 <p class="caption">
-Figure 1: Left: a ggimage() of a <strong><em>one</em></strong> in a 28<em>28 matrix. Rigth: Visual representation of 300 <strong><em>ones</em></strong> in a model matrix with 28</em>28 columns and 300 lines
+Figure 1: Left: a ggimage() of a <strong><em>one</em></strong> in a 28x28 matrix. Rigth: Visual representation of 300 <strong><em>ones</em></strong> in a model matrix with 28x28 columns and 300 lines
 </p>
 </div>
 <p><br /></p>
@@ -97,9 +97,9 @@ img &lt;- x_train[id,]
 p1 &lt;- ggimage(img)
 grid.arrange(p0,p1,nrow=1,widths=c(2,4))</code></pre>
 <div class="figure" style="text-align: center"><span id="fig:pcadigit0"></span>
-<img src="/post/pca_umap/index_files/figure-html/pcadigit0-1.png" alt="Left: a ggimage() of a **_zero_** in a 28*28 matrix. Rigth: Visual representation of 300 **_zeros_** in a model matrix" width="864" />
+<img src="index_files/figure-html/pcadigit0-1.png" alt="Left: a ggimage() of a **_zero_** in a 28x28 matrix. Rigth: Visual representation of 300 **_zeros_** in a model matrix" width="864" />
 <p class="caption">
-Figure 2: Left: a ggimage() of a <strong><em>zero</em></strong> in a 28*28 matrix. Rigth: Visual representation of 300 <strong><em>zeros</em></strong> in a model matrix
+Figure 2: Left: a ggimage() of a <strong><em>zero</em></strong> in a 28x28 matrix. Rigth: Visual representation of 300 <strong><em>zeros</em></strong> in a model matrix
 </p>
 </div>
 <p><br /></p>
@@ -144,7 +144,7 @@ p1 &lt;- ggimage(matrixoverlap)
 
 grid.arrange(p0,p1,nrow=1,widths=c(2,4))</code></pre>
 <div class="figure" style="text-align: center"><span id="fig:overlap1"></span>
-<img src="/post/pca_umap/index_files/figure-html/overlap1-1.png" alt="Left: Plot of 300 **__ones__** (blue) and **__zeros__** (red) overlaped (white for overlapet areas). Rigth: The same overlap, but in model matrix." width="864" />
+<img src="index_files/figure-html/overlap1-1.png" alt="Left: Plot of 300 **__ones__** (blue) and **__zeros__** (red) overlaped (white for overlapet areas). Rigth: The same overlap, but in model matrix." width="864" />
 <p class="caption">
 Figure 3: Left: Plot of 300 <strong><strong>ones</strong></strong> (blue) and <strong><strong>zeros</strong></strong> (red) overlaped (white for overlapet areas). Rigth: The same overlap, but in model matrix.
 </p>
@@ -165,7 +165,7 @@ centroid &lt;- pca.df%&gt;%group_by(y_train)%&gt;%summarise(PC1=mean(PC1),PC2=me
 ggplot(pca.df)+geom_point(aes(PC1,PC2,color=factor(y_train)))+
   geom_text(data=centroid,aes(PC1,PC2,label=y_train),size=5)+labs(color=&#39;Digit&#39;)</code></pre>
 <div class="figure" style="text-align: center"><span id="fig:pca"></span>
-<img src="/post/pca_umap/index_files/figure-html/pca-1.png" alt="digit-MINST PCA of first 2 components" width="576" />
+<img src="index_files/figure-html/pca-1.png" alt="digit-MINST PCA of first 2 components" width="576" />
 <p class="caption">
 Figure 4: digit-MINST PCA of first 2 components
 </p>
@@ -198,7 +198,7 @@ grid.arrange(arrangeGrob(p1,top=&quot;The more 1 of the 8&#39;s&quot;),
              arrangeGrob(p0,top=&quot;The more 0 of the 8&#39;s&quot;),
              arrangeGrob(p9,top=&quot;&#39;The more 9 of the 8&#39;&quot;),nrow=1)</code></pre>
 <div class="figure" style="text-align: center"><span id="fig:eith"></span>
-<img src="/post/pca_umap/index_files/figure-html/eith-1.png" alt="Some 8's" width="864" />
+<img src="index_files/figure-html/eith-1.png" alt="Some 8's" width="864" />
 <p class="caption">
 Figure 5: Some 8’s
 </p>
@@ -219,7 +219,7 @@ ggplot(pca.df)+geom_point(aes(PC1,PC2,color=factor(y_train)))+
   labs(color=&#39;Digit&#39;)+
   geom_point(data=blueprints,aes(PC1,PC2),color=&#39;black&#39;,size=3)</code></pre>
 <div class="figure" style="text-align: center"><span id="fig:blueprints"></span>
-<img src="/post/pca_umap/index_files/figure-html/blueprints-1.png" alt="4 fake digits on the PCA plane" width="576" />
+<img src="index_files/figure-html/blueprints-1.png" alt="4 fake digits on the PCA plane" width="576" />
 <p class="caption">
 Figure 6: 4 fake digits on the PCA plane
 </p>
@@ -241,7 +241,7 @@ grid.arrange(arrangeGrob(p1,top=&#39;a) PC1: +2000, PC2: 0&#39;),
              arrangeGrob(p3,top=&#39;c) PC1: 0, PC2: 2000&#39;),
              arrangeGrob(p4,top=&#39;d) PC1: 0, PC2: -2000&#39;),nrow=1)</code></pre>
 <div class="figure" style="text-align: center"><span id="fig:reverse"></span>
-<img src="/post/pca_umap/index_files/figure-html/reverse-1.png" alt="the 'real' 4 fake digits" width="864" />
+<img src="index_files/figure-html/reverse-1.png" alt="the 'real' 4 fake digits" width="864" />
 <p class="caption">
 Figure 7: the ‘real’ 4 fake digits
 </p>
@@ -281,7 +281,7 @@ centroid &lt;- umap.df%&gt;%group_by(y_train)%&gt;%summarise(V1=mean(V1),V2=mean
 ggplot(umap.df,aes(V1,V2))+geom_point(aes(color=factor(y_train)))+
   geom_text(data=centroid,aes(V1,V2,label=y_train),size=5)+labs(color=&#39;Digit&#39;)</code></pre>
 <div class="figure" style="text-align: center"><span id="fig:UMAP"></span>
-<img src="/post/pca_umap/index_files/figure-html/UMAP-1.png" alt="UMAP plot of digits-MNIST" width="576" />
+<img src="index_files/figure-html/UMAP-1.png" alt="UMAP plot of digits-MNIST" width="576" />
 <p class="caption">
 Figure 8: UMAP plot of digits-MNIST
 </p>

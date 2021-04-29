@@ -88,7 +88,7 @@ X1 & ...  & X6 & X7 & X8 & X9 & X10 & X11 & X12 & ... & X36\\
 
 What we see: a image matrix of a **_one_**, versus what PCA "see" (a matrix of 300 ones)
 
-```{r pcadigit1, cache=T,fig.width=9,fig.height=3, fig.cap="Left: a ggimage() of a **_one_** in a 28*28 matrix. Rigth: Visual representation of 300 **_ones_** in a model matrix with 28*28 columns and 300 lines"}
+```{r pcadigit1, cache=T,fig.width=9,fig.height=3, fig.cap="Left: a ggimage() of a **_one_** in a 28x28 matrix. Rigth: Visual representation of 300 **_ones_** in a model matrix with 28x28 columns and 300 lines"}
 
 library(ggmap)
 library(gridExtra)
@@ -112,7 +112,7 @@ grid.arrange(p0,p1,nrow=1,widths=c(2,4))
 
 The same but with a **_zero_**
 
-```{r pcadigit0, cache=T,fig.width=9,fig.height=3, fig.cap="Left: a ggimage() of a **_zero_** in a 28*28 matrix. Rigth: Visual representation of 300 **_zeros_** in a model matrix"}
+```{r pcadigit0, cache=T,fig.width=9,fig.height=3, fig.cap="Left: a ggimage() of a **_zero_** in a 28x28 matrix. Rigth: Visual representation of 300 **_zeros_** in a model matrix"}
 
 id <- which(y_train==0)[1] 
 img <- x_train[id,]
